@@ -7,6 +7,23 @@
 
 logbase * g_Log = NULL;
 
+int miniLog_get_default_name(char * file_name, int len)
+{
+    if(NULL == file_name || len < 0)
+    {
+        return -1;
+    }
+    int ret = readlink("/proc/self/exe", file_name, len);
+    if(ret < 0)
+    {
+        return -1;
+    }
+    file_name[ret] = '\0';
+    snprintf(file_name + ret, len - ret, ".log");
+
+    return 0;
+}
+
 int miniLog_init(const char * file_name)
 {
     const char * miniLog_file_name = NULL;
@@ -35,6 +52,22 @@ int miniLog_init(const char * file_name)
 #endif
 
     return miniLog_open_file(g_Log);
+}
+
+int miniLog_check_file(logbase * pLog)
+{
+    if(NULL == pLog || NULL == pLog -> file_point)
+    {
+        char file_name[MAX_FILE_NAME_LEN] = {0};
+        if(miniLog_get_default_name(file_name, sizeof(file_name)) < 0)
+        {
+            return -1;
+        }
+
+        return miniLog_init(file_name);
+    }
+
+    return 0;
 }
 
 int miniLog_update_file(logbase * pLog, const char * file_name)
@@ -158,6 +191,8 @@ int miniLog_write_file(int ilevel, const char * fmt, va_list argptr, FILE * fp)
 
 int miniLog_write_log(int ilevel, const char * fmt, ...)
 {
+    miniLog_check_file(g_Log);
+
     va_list argptr;
     int cnt;
 

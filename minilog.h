@@ -40,6 +40,8 @@
 #define MINILOG_TAG_PPID    (1 << 11)
 #define MINILOG_TAG_ALL     (0x0ff00)
 
+#define MAX_FILE_NAME_LEN 1024
+
 typedef struct
 {
     char * file_name;
@@ -55,9 +57,12 @@ typedef struct
 extern logbase * g_Log;
 //extern const char g_LogType[][];
 
+int miniLog_get_default_name(char * file_name, int len);
 int miniLog_init(const char * file_name);
+int miniLog_check_file(logbase * pLog);
 int miniLog_update_file(logbase * pLog, const char * file_name);
 int miniLog_open_file(logbase * pLog);
+
 int miniLog_write_log(int level, const char * fmt, ...);
 int miniLog_write_log_v(int level, const char * fmt, va_list arg_list);
 int miniLog_write_file(int level, const char * fmt, va_list arg_screen, FILE * fp);
