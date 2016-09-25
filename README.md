@@ -22,7 +22,7 @@ when you run test, it will create a file "test.log" in the same dir of "**test**
     minilog $ ./test 
     [5575] [5728] [log] 0 : hello world !
     minilog $ ls
-    Makefile  minilog.c  minilog.h  minilog.o  test  test.c  **test.log**
+    Makefile  minilog.c  minilog.h  minilog.o  test  test.c  test.log
 
 ##Use your log file
 
