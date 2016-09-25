@@ -1,3 +1,4 @@
+
 #ifndef __LOG_H__
 #define __LOG_H__
 #include <stdio.h>
@@ -73,3 +74,4 @@ int miniLog_write_pid   (int level, FILE * fp);
 int miniLog_write_ppid  (int level, FILE * fp);
 
 #endif
+

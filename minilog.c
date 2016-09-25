@@ -274,3 +274,4 @@ int miniLog_write_ppid  (int level, FILE * fp)
 
     return 0;
 }
+
