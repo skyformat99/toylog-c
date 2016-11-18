@@ -1,5 +1,5 @@
 #include <unistd.h>
-#include "toylog.h"
+#include "toylog-c.h"
 
 #ifdef MULTI_THREAD 
 #include <pthread.h>

@@ -16,7 +16,7 @@
  * =====================================================================================
  */
 #include <stdio.h>
-#include "toylog.h"
+#include "toylog-c.h"
 
 int main(int argc, char * argv[])
 {

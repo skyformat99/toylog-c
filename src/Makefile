@@ -40,9 +40,9 @@ inc : dummy
 ## task 
 ##############################
 
-libtoylog.a : toylog.os 
+libtoylog.a : toylog-c.os 
 	ar cr $@ $^
 
-libtoylog.so : toylog.os
+libtoylog.so : toylog-c.os
 	$(MAKE) -shared -Wl,-soname,$@ -o $@ $^ -lc $(LDFLAGS) 
 
