@@ -5,7 +5,10 @@
 #include <string.h>
 #include <stdarg.h>
 
-//#define MULTI_THREAD 
+//#define _TOY_MULTI_PTHREAD 
+#ifdef _TOY_MULTI_PTHREAD
+#include <pthread.h>
+#endif
 
 #define TOYLOG_PRIORITY_FATAL   (1 << 0)
 #define TOYLOG_PRIORITY_ALERT   (1 << 1)
@@ -18,80 +21,93 @@
 #define TOYLOG_PRIORITY_RACE    (1 << 8)
 #define TOYLOG_PRIORITY_NOTSET  (1 << 9)
 #define TOYLOG_PRIORITY_UNKNOWN (1 << 10)
-
-int toyLog(const char * fmt, ...);
-int toyErr(const char * fmt, ...);
-int toyAlt(const char * fmt, ...);
-int toyInf(const char * fmt, ...);
-int toyTrc(const char * fmt, ...);
-int toyDbg(const char * fmt, ...);
-
-
-        toyLog_write_log(TOYLOG_LEVEL_LOG, fmt, ##arg); \
-
-    do{\
-        toyLog_write_log(TOYLOG_LEVEL_ERR, fmt, ##arg); \
-    }while(0)
-
-#define toyInf(fmt, arg...) \
-    do{\
-        toyLog_write_log(TOYLOG_LEVEL_INF, fmt, ##arg); \
-    }while(0)
-
-#define toyTrc(fmt, arg...) \
-    do{\
-        toyLog_write_log(TOYLOG_LEVEL_TRC, fmt, ##arg); \
-    }while(0)
-
-#define toyLOG_LEVEL_LOG   (1 << 3)
-#define toyLOG_LEVEL_ERR   (1 << 2)
-#define toyLOG_LEVEL_INF   (1 << 1)
-#define toyLOG_LEVEL_TRC   (1 << 0)
-#define toyLOG_LEVEL_ALL   (0x0ff)
-
-#define toyLOG_TAG_TIME    (1 << 8)
-#define toyLOG_TAG_DATE    (1 << 9)
-#define toyLOG_TAG_PID     (1 << 10)
-#define toyLOG_TAG_PPID    (1 << 11)
-#define toyLOG_TAG_ALL     (0x0ff00)
+#define TOYLOG_PRIORITY_ALL	    (0xffff)
 
 #define MAX_FILE_NAME_LEN 1024
 
+typedef int (*CLOSE_FUN)(FILE *);
+
+typedef struct 
+{
+    FILE * out;
+    CLOSE_FUN close_fun;
+#ifdef _TOY_MULTI_PTHREAD 
+    pthread_mutex_t mutex;
+#endif
+} LogOutput;
+
 typedef struct
 {
-    char * file_name;
+    const char * file_name;
     FILE * file_point;
-    int    log_grade;
-    int    log_level;   //0x0ffffff 
-    int    on_screen;
-#ifdef MULTI_THREAD 
+    int    priority;
+#ifdef _TOY_MULTI_PTHREAD 
     pthread_mutex_t p_Mutex;
 #endif
-} logbase;
+} LogBody;
 
-extern logbase * g_Log;
-//extern const char g_LogType[][];
+#define toylog_fatal   (fmt, arg...) \
+    do{\
+        toylog_write_log(TOYLOG_PRIORITY_FATAL, fmt, ##arg);\
+    }while(0)
 
-int toyLog_get_default_name(char * file_name, int len);
-int toyLog_init(const char * file_name);
-int toyLog_check_file(logbase * pLog);
-int toyLog_update_file(logbase * pLog, const char * file_name);
-int toyLog_open_file(logbase * pLog);
+#define toylog_alert   (fmt, arg...)  \
+    do{\
+        toylog_write_log(TOYLOG_PRIORITY_ALERT, fmt, ##arg);\
+    }while(0)
 
-int toyLog_write_log(int level, const char * fmt, ...);
-int toyLog_write_log_v(int level, const char * fmt, va_list arg_list);
-int toyLog_write_file(int level, const char * fmt, va_list arg_screen, FILE * fp);
-int toyLog_close_file(logbase * pLog);
-int toyLog_end();
-int toyLog_destroy();
-int toyLog_setlevel(int levels);
-int toyLog_dellevel(int level);
-int toyLog_addlevel(int level);
+#define toylog_crit    (fmt, arg...)  \
+    do{\
+        toylog_write_log(TOYLOG_PRIORITY_CRIT, fmt, ##arg);\
+    }while(0)
 
-int toyLog_write_header(int level, FILE * fp);
-int toyLog_write_time  (int level, FILE * fp);
-int toyLog_write_pid   (int level, FILE * fp);
-int toyLog_write_ppid  (int level, FILE * fp);
+#define toylog_error   (fmt, arg...)  \
+    do{\
+        toylog_write_log(TOYLOG_PRIORITY_ERROR, fmt, ##arg);\
+    }while(0)
+
+#define toylog_warn    (fmt, arg...)  \
+    do{\
+        toylog_write_log(TOYLOG_PRIORITY_WARN, fmt, ##arg);\
+    }while(0)
+
+#define toylog_notice  (fmt, arg...)  \
+    do{\
+        toylog_write_log(TOYLOG_PRIORITY_NOTICE, fmt, ##arg);\
+    }while(0)
+
+#define toylog_info    (fmt, arg...)  \
+    do{\
+        toylog_write_log(TOYLOG_PRIORITY_INFO, fmt, ##arg);\
+    }while(0)
+
+#define toylog_debug   (fmt, arg...)  \
+    do{\
+        toylog_write_log(TOYLOG_PRIORITY_DEBUG, fmt, ##arg);\
+    }while(0)
+
+#define toylog_race    (fmt, arg...)  \
+    do{\
+        toylog_write_log(TOYLOG_PRIORITY_RACE, fmt, ##arg);\
+    }while(0)
+
+#define toylog_notset  (fmt, arg...)  \
+    do{\
+        toylog_write_log(TOYLOG_PRIORITY_NOTSET, fmt, ##arg);\
+    }while(0)
+
+#define toylog_unknown (fmt, arg...)  \
+    do{\
+        toylog_write_log(TOYLOG_PRIORITY_UNKNOWN, fmt, ##arg);\
+    }while(0)
+
+const char * toylog_version();
+const char ** toylog_help();
+
+int toylog_init_config(const char * config_file);
+int toylog_priority_set(int priority);
+int toylog_priority_filter(int priority);
+int toylog_end();
 
 #endif
 

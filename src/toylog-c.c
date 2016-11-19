@@ -1,11 +1,51 @@
 #include <unistd.h>
 #include "toylog-c.h"
 
-#ifdef MULTI_THREAD 
-#include <pthread.h>
-#endif
+LogBody * _g_Log = NULL;
+const char * _g_version = "0.1.1";
+const char * _g_help_info[] = 
+{
+    "config patternlayout : ",
+    "%d - the date",
+    "    %y   last two digits of year (00..99)",
+    "    %Y   year",
+    "    %m   month (01..12)",
+    "    %b   locale's abbreviated month name (e.g., Jan)",
+    "    %d   day of month (e.g., 01)",
+    "    %u   day of week (1..7); 1 is Monday",
+    "    %a   locale's abbreviated weekday name (e.g., Sun)",
+    "    %H   hour (00..23)",
+    "    %I   hour (01..12)",
+    "    %M   minute (00..59)",
+    "    %S   second (00..60)",
+    "    %l   milliseconds",
+    "%m - the message",
+    "%p - the priority",
+    "%r - milliseconds since this layout was created",
+    NULL
+};
 
-logbase * g_Log = NULL;
+/* ***********************
+ * static functions
+ * **********************/
+/* 
+int toyLog_get_default_name(char * file_name, int len);
+int toyLog_check_file(logbase * pLog);
+int toyLog_open_file(logbase * pLog);
+
+int toyLog_write_log(int level, const char * fmt, ...);
+int toyLog_write_log_v(int level, const char * fmt, va_list arg_list);
+int toyLog_write_file(int level, const char * fmt, va_list arg_screen, FILE * fp);
+int toyLog_close_file(logbase * pLog);
+int toyLog_destroy();
+int toyLog_setlevel(int levels);
+int toyLog_dellevel(int level);
+int toyLog_addlevel(int level);
+
+int toyLog_write_header(int level, FILE * fp);
+int toyLog_write_time  (int level, FILE * fp);
+int toyLog_write_pid   (int level, FILE * fp);
+int toyLog_write_ppid  (int level, FILE * fp);
 
 int toyLog_get_default_name(char * file_name, int len)
 {
@@ -309,4 +349,43 @@ int toyLog_write_ppid  (int level, FILE * fp)
 
     return 0;
 }
+*/
+/* **********************
+ * API functions
+ * date : 2016-11-19
+ * *********************/
+const char * toylog_version()
+{
+    return _g_version;
+}
+
+const char ** toylog_help()
+{
+    return _g_help_info;
+}
+
+int toylog_init_config(const char * config_file)
+{
+    if(NULL == config_file)
+    {
+        return -1;
+    }
+    if(access(config_file, R_OK) != 0)
+    {
+        return -1;
+    }
+    FILE * fp = fopen(config_file, "r");
+    if(NULL == fp)
+    {
+        return -1;
+    }
+    if(fseek(fp, 0, SEEK_END) < 0)
+    {
+        fclose(fp);
+        return -1;
+    }
+
+    return 0;
+}
+
 
