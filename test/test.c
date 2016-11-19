@@ -18,6 +18,25 @@
 #include <stdio.h>
 #include <string.h>
 #include "toylog-c.h"
+#include "toybitmap.h"
+
+#define TEST_EQ(a, b) \
+    do{\
+        if(a == b) {\
+            printf("\033[0;32m[LINE %5d : EQUE SUCCESS    ]\033[0m\n", __LINE__);\
+        } else {\
+            printf("\033[0;31m[LINE %5d : EQUE FAILURE    ]\033[0m\n", __LINE__);\
+        }\
+    }while(0)
+
+#define TEST_NE(a, b) \
+    do{\
+        if(a != b) {\
+            printf("\033[0;32m[LINE %5d : NOT EQUE SUCCESS]\033[0m\n", __LINE__);\
+        } else {\
+            printf("\033[0;31m[LINE %5d : NOT EQUE FAILURE]\033[0m\n", __LINE__);\
+        }\
+    }while(0)
 
 void usage(const char * exename)
 {
@@ -26,10 +45,44 @@ void usage(const char * exename)
     printf("    -conf config-file\n");
 }
 
-int main(int argc, char * argv[])
+void test_bitmap()
 {
-    usage(argv[0]);
+    printf("test ToyBitmap\n");
 
+    int x = init_map_size(NULL, 1);
+    TEST_EQ(-1, x);
+
+    ToyBitmap map;
+    x = init_map_size(&map, 10);
+
+    x = set_map_value(&map, -1, 123);
+    TEST_EQ(-1, x);
+
+    x = set_map_value(&map, 10, 123);
+    TEST_EQ(-1, x);
+
+    int i = 0;
+    for(i = 0; i < 10; i++)
+    {
+        x = set_map_value(&map, i, i + 10);
+        TEST_EQ(0, x);
+    }
+
+    char c = get_map_value(&map, -1);
+    TEST_EQ(-1, c);
+
+    c = get_map_value(&map, 10);
+    TEST_EQ(-1, c);
+
+    for(i = 0; i < 10; i++)
+    {
+        c = get_map_value(&map, i);
+        TEST_EQ(c, i + 10);
+    }
+}
+
+void test_info()
+{
     const char * ver = toylog_version();
     printf("version : [%s]\n", ver);
 
@@ -40,6 +93,15 @@ int main(int argc, char * argv[])
     {
         printf("%s\n", help[i]);
     }
+}
+
+int main(int argc, char * argv[])
+{
+    usage(argv[0]);
+
+    test_info();
+
+    test_bitmap();
 
 //    if(argc > 1)
 //    {
