@@ -3,7 +3,7 @@
 CC	= gcc -g
 CXX	= g++ -g 
 MAKE= $(CC)
-CFLAGS	= -Wall -I./
+CFLAGS	= -Wall -I./ 
 LDFLAGS	= 
 ALL_FILE= src
 
@@ -36,7 +36,7 @@ inc : dummy
 ## task 
 ##############################
 
-test : dummy 
+test : all dummy
 	make -C test
 	cd test; ./test
 

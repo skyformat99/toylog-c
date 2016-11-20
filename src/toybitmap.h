@@ -4,12 +4,13 @@
 typedef struct 
 {
     int map_len;
-    char * map;
+    int * map;
 }ToyBitmap;
 
 int  init_map_size(ToyBitmap * map, int size);
-int  set_map_value(ToyBitmap * map, int pos, char value);
-char get_map_value(ToyBitmap * map, int pos);
+int  set_map_value(ToyBitmap * map, int pos, int value);
+int  get_map_value(ToyBitmap * map, int pos);
+void *mzero(void *s, int n);
 
 #endif /* end file */
 

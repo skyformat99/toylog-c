@@ -3,7 +3,7 @@
 CC	= gcc -g
 CXX	= g++ -g 
 MAKE= $(CC)
-CFLAGS	= -Wall -I./
+CFLAGS	= -Wall -I./ -DTOYDEBUG
 LDFLAGS	= 
 ALL_FILE= libtoylog.so libtoylog.a
 
@@ -40,9 +40,9 @@ inc : dummy
 ## task 
 ##############################
 
-libtoylog.a : toylog-c.os toybitmap.os
+libtoylog.a : toylog-c.os toybitmap.os toyparser.os
 	ar cr $@ $^
 
-libtoylog.so : toylog-c.os toybitmap.os
+libtoylog.so : toylog-c.os toybitmap.os toyparser.os
 	$(MAKE) -shared -Wl,-soname,$@ -o $@ $^ -lc $(LDFLAGS) 
 

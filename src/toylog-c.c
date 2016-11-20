@@ -22,6 +22,7 @@ const char * _g_help_info[] =
     "%m - the message",
     "%p - the priority",
     "%r - milliseconds since this layout was created",
+    "",
     NULL
 };
 

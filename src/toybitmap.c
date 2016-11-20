@@ -19,7 +19,7 @@
 #include <string.h>
 #include "toybitmap.h"
 
-static void *mzero(void *s, int n)
+void *mzero(void *s, int n)
 {
     if(NULL == s || n <= 0)
     {
@@ -38,7 +38,7 @@ int init_map_size(ToyBitmap * map, int size)
     map -> map = NULL;
     map -> map_len = -1;
 
-    char * p = (char *)malloc(sizeof(char) * size);
+    int * p = (int *)malloc(sizeof(int) * size);
     if(NULL == p)
     {
         return -1;
@@ -50,7 +50,7 @@ int init_map_size(ToyBitmap * map, int size)
     return 0;
 }
 
-int set_map_value(ToyBitmap * map, int pos, char value)
+int set_map_value(ToyBitmap * map, int pos, int value)
 {
     if( NULL == map || 
         NULL == map -> map || 
@@ -65,7 +65,7 @@ int set_map_value(ToyBitmap * map, int pos, char value)
     return 0;
 }
 
-char get_map_value(ToyBitmap * map, int pos)
+int  get_map_value(ToyBitmap * map, int pos)
 {
     if( NULL == map ||
         NULL == map -> map ||
