@@ -40,9 +40,9 @@ inc : dummy
 ## task 
 ##############################
 
-libtoylog.a : toylog-c.os toybitmap.os toyparser.os
+libtoylog.a : toylog-c.os toybitmap.os toyparser.os toytypes.os
 	ar cr $@ $^
 
-libtoylog.so : toylog-c.os toybitmap.os toyparser.os
+libtoylog.so : toylog-c.os toybitmap.os toyparser.os toytypes.os
 	$(MAKE) -shared -Wl,-soname,$@ -o $@ $^ -lc $(LDFLAGS) 
 

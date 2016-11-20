@@ -1,5 +1,6 @@
 #ifndef _TOYTYPES_H_
 #define _TOYTYPES_H_
+#include <stdio.h>
 #include "toybitmap.h"
 
 //#define _TOY_MULTI_PTHREAD 
@@ -41,27 +42,29 @@ typedef struct
     ToyBitmap *map;
 }LogLayout;
 
-typedef int (*CLOSE_FUN)(FILE *);
 typedef struct 
 {
-    const char *log_file_name;
-    int         log_type;
-    FILE       *out;
-    CLOSE_FUN   close_fun;
+    int  log_type;
+    char *log_file;
+    FILE *out;
+    char * layout;
+    int  priority;
+    int  color;
 #ifdef _TOY_MULTI_PTHREAD 
-    pthread_mutex_t mutex;
+    pthread_mutex_t file_mutex;
 #endif
 } LogOutput;
 
 typedef struct
 {
-    const char * file_name;
-    FILE * file_point;
-    int    priority;
+    LogOutput ** output_list;
 #ifdef _TOY_MULTI_PTHREAD 
-    pthread_mutex_t p_Mutex;
+    pthread_mutex_t body_mutex;
 #endif
 } LogBody;
+
+int toylog_convert_priority(const char * priority);
+void show_logoutput(LogOutput * log);
 
 #endif /* end file */
 

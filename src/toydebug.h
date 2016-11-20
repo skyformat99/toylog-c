@@ -4,7 +4,7 @@
 #ifdef TOYDEBUG
 #define TOYDBG(fmt, arg...) \
     do{\
-        printf("%s %d : ", __FILE__, __LINE__);\
+        printf("%s %3d : ", __FILE__, __LINE__);\
         printf(fmt, ##arg);\
         printf("\n");\
     }while(0)

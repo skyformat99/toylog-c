@@ -50,6 +50,15 @@ int init_map_size(ToyBitmap * map, int size)
     return 0;
 }
 
+void  free_map(ToyBitmap * map)
+{
+    if(NULL != map && NULL != map -> map) 
+    {
+        free(map -> map);
+        map -> map = NULL;
+    }
+}
+
 int set_map_value(ToyBitmap * map, int pos, int value)
 {
     if( NULL == map || 

@@ -8,6 +8,7 @@ typedef struct
 }ToyBitmap;
 
 int  init_map_size(ToyBitmap * map, int size);
+void  free_map(ToyBitmap * map);
 int  set_map_value(ToyBitmap * map, int pos, int value);
 int  get_map_value(ToyBitmap * map, int pos);
 void *mzero(void *s, int n);

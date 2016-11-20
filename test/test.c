@@ -79,6 +79,8 @@ void test_bitmap()
         c = get_map_value(&map, i);
         TEST_EQ(c, i + 10);
     }
+
+    free_map(&map);
 }
 
 void test_info()
