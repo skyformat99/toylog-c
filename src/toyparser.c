@@ -228,6 +228,10 @@ LogOutput * get_logoutput(char * const* line_list, const char * toyfile) {
                 _log_type = LOG_TYPE_FILE;
             } else if (strcasecmp(value, "console") == 0) {
                 _log_type = LOG_TYPE_CONCLE;
+            } else if (strcasecmp(value, "socket") == 0) {
+                _log_type = LOG_TYPE_SOCKET;
+            } else if (strcasecmp(value, "email") == 0) {
+                _log_type = LOG_TYPE_EMAIL;
             }
             continue;
         }

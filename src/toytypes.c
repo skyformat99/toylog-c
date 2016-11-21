@@ -60,10 +60,12 @@ void show_logoutput(LogOutput * log) {
     if(NULL == log) {
         return ;
     }
+    TOYDBG("==============================");
     TOYDBG("type     = [%d]", log -> log_type);
     TOYDBG("file     = [%s]", log -> log_file);
     TOYDBG("layout   = [%s]", log -> layout);
     TOYDBG("priority = [%d]", log -> priority);
     TOYDBG("color    = [%d]", log -> color);
+    TOYDBG("==============================");
 }
 

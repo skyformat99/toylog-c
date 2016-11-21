@@ -22,8 +22,10 @@
 
 #define MAX_FILE_NAME_LEN 1024
 
-#define LOG_TYPE_FILE   0
-#define LOG_TYPE_CONCLE 1
+#define LOG_TYPE_CONCLE 0
+#define LOG_TYPE_FILE   1
+#define LOG_TYPE_SOCKET 2
+#define LOG_TYPE_EMAIL  3
 
 typedef struct
 {
@@ -45,6 +47,7 @@ typedef struct
 typedef struct 
 {
     int  log_type;
+    char *engine;
     char *log_file;
     FILE *out;
     char * layout;
