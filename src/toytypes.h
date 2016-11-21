@@ -26,6 +26,9 @@
 #define LOG_TYPE_FILE   1
 #define LOG_TYPE_SOCKET 2
 #define LOG_TYPE_EMAIL  3
+#define LOG_TYPE_DB     4
+#define LOG_TYPE_WEB    5
+
 
 typedef struct
 {
@@ -48,6 +51,7 @@ typedef struct
 {
     int  log_type;
     char *engine;
+    char *protocol;
     char *log_file;
     FILE *out;
     char * layout;

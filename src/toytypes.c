@@ -63,6 +63,8 @@ void show_logoutput(LogOutput * log) {
     TOYDBG("==============================");
     TOYDBG("type     = [%d]", log -> log_type);
     TOYDBG("file     = [%s]", log -> log_file);
+    TOYDBG("engine   = [%s]", log -> engine);
+    TOYDBG("protocol = [%s]", log -> protocol);
     TOYDBG("layout   = [%s]", log -> layout);
     TOYDBG("priority = [%d]", log -> priority);
     TOYDBG("color    = [%d]", log -> color);

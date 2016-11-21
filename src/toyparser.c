@@ -48,6 +48,12 @@ int parse_memory(LogBody * log, const char * mem) {
     int ret = parse_lines(log, line_list);
     free_line_list(&line_list);
 
+    //XXX for debug
+    int i = 0;
+    for(i = 0; NULL != log -> output_list && NULL != log -> output_list[i]; i++) {
+        show_logoutput(log -> output_list[i]);
+    }
+
     return ret;
 }
 
@@ -202,6 +208,8 @@ LogOutput * get_logoutput(char * const* line_list, const char * toyfile) {
 
     int  _log_type = 0;
     char _log_file[MAX_FILE_NAME_LEN] = {0};
+    char _log_engine[MAX_FILE_NAME_LEN] = {0};
+    char _log_protocol[MAX_FILE_NAME_LEN] = {0};
     char _log_layout[MAX_FILE_NAME_LEN] = {0};
     int  _log_priority = TOYLOG_PRIORITY_UNKNOWN;
     int  _log_color = 0;
@@ -232,6 +240,10 @@ LogOutput * get_logoutput(char * const* line_list, const char * toyfile) {
                 _log_type = LOG_TYPE_SOCKET;
             } else if (strcasecmp(value, "email") == 0) {
                 _log_type = LOG_TYPE_EMAIL;
+            } else if (strcasecmp(value, "database") == 0) {
+                _log_type = LOG_TYPE_DB;
+            } else if (strcasecmp(value, "web") == 0) {
+                _log_type = LOG_TYPE_WEB;
             }
             continue;
         }
@@ -268,14 +280,32 @@ LogOutput * get_logoutput(char * const* line_list, const char * toyfile) {
             }
             continue;
         }
+        if(strncasecmp(pline + len, "engine", strlen("engine")) == 0) {
+            if(get_value(&value, pline) < 0) {
+                TOYDBG("get value of [%s] faild", "engine");
+            } else {
+                snprintf(_log_engine, sizeof(_log_engine) - 1, "%s", value);
+            }
+            continue;
+        }
+        if(strncasecmp(pline + len, "protocol", strlen("protocol")) == 0) {
+            if(get_value(&value, pline) < 0) {
+                TOYDBG("get value of [%s] faild", "protocol");
+            } else {
+                snprintf(_log_protocol, sizeof(_log_protocol) - 1, "%s", value);
+            }
+            continue;
+        }
     }
     LogOutput * plog = (LogOutput *)malloc_mem(sizeof(LogOutput));
     if(NULL == plog) {
         return NULL;
     }
     plog -> log_type = _log_type;
-    plog -> log_file = strdup(_log_file);
-    plog -> layout   = strdup(_log_layout);
+    plog -> log_file = toy_strndup(_log_file, strlen(_log_file));
+    plog -> engine   = toy_strndup(_log_engine, strlen(_log_engine));
+    plog -> protocol = toy_strndup(_log_protocol, strlen(_log_protocol));
+    plog -> layout   = toy_strndup(_log_layout, strlen(_log_layout));
     plog -> priority = _log_priority;
     plog -> color    = _log_color;
 
@@ -318,8 +348,8 @@ int parse_lines(LogBody * log, char * const* line_list) {
             continue;
         }
         log_list[pos++] = pout;
-        show_logoutput(pout);
     }
+
     free_line_list(&file_list);
     log -> output_list = log_list;
 
