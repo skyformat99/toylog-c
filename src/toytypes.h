@@ -47,7 +47,7 @@ typedef struct
 #define __MSG_TYPE_H    0x108
 #define __MSG_TYPE_I    0x109
 #define __MSG_TYPE_M    0x10a
-#define __MSG_TYPE_s    0x10b
+#define __MSG_TYPE_S    0x10b
 #define __MSG_TYPE_l    0x10c
 
 #define _MSG_TYPE_m     0x200
@@ -69,7 +69,7 @@ typedef struct
     char *log_file;
     FILE *out;
     char * layout;
-    LogLayout * fomartted_layout;
+    LogLayout * formatted_layout;
     int  priority;
     int  color;
 #ifdef _TOY_MULTI_PTHREAD 

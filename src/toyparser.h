@@ -12,6 +12,10 @@ void free_line_list(char *** line_list);
 
 int get_first_not_of(const char * p, int len, const char * sub);
 void free_mem(void * p);
+void *malloc_mem(size_t size);
+char *toy_chrdup(char c);
+char *toy_strndup(const char *s, size_t n);
+int get_char_count(const char * mem, int len, const char * ptn);
 
 #endif /* end file */
 

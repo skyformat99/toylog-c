@@ -1,5 +1,4 @@
 /*
- * o
  * =====================================================================================
  *
  *       Filename:  parser.c
@@ -54,92 +53,145 @@ LogLayout *parse_layout(const char * layout) {
 
     char szbuf[1024] = {0};
     mzero(szbuf, sizeof(szbuf));
+    int k = 0;
     int i = 0;
     int stat = 0;
     for(i = 0; layout[i] != '\0'; i++) {
         char c = layout[i];
+        TOYDBG("stat [%d], char [%c]", stat, c);
         if(0 == stat) {
-            if('%' != c) {
-                continue;
-            } else if('%' == c) {
+            if('%' == c) {
                 stat = 1;
-                i++;
+                TOYDBG("get char [%c], set stat to [%d]", c, stat);
+            } else if ('\\' == c) {
+                switch(layout[i + 1]) {
+                    case 'n' :
+                        layout_list[layout_pos].layout_type = _MSG_TYPE_CHAR;
+                        layout_list[layout_pos].msg = toy_chrdup('\n');
+                        layout_pos++;
+                        TOYDBG("int stat [%d], get char [%c], set it be a msg [%s]", 2, c, layout_list[layout_pos].msg);
+                        i++;
+                        break;
+                    default :
+                        TOYDBG("what this means : [%c] ? ", c);
+                        break;
+                }
             }
+            continue;
         }
-        c = layout[i];
         if(1 == stat) {
             switch(c) {
-                case 'd' :
-                    stat = 2;
-                    int k = i;
+                case 'd' : 
+                    k = i;
                     for(;layout[k] != '\0'; k++) {
                         if('{' == layout[k]) {
-                            k++;
                             i = k;
+                            stat = 2;
+                            TOYDBG("in stat [%d], cache char [%c], set stat to [%d]", 1, 'd', 2);
                             break;
                         }
                     }
                     break;
                 case 'm' :
                     layout_list[layout_pos++].layout_type = _MSG_TYPE_m;
+                    stat = 0;
                     break;
                 case 'p' :
                     layout_list[layout_pos++].layout_type = _MSG_TYPE_p;
+                    stat = 0;
                     break;
                 case 'r' :
                     layout_list[layout_pos++].layout_type = _MSG_TYPE_r;
+                    stat = 0;
                     break;
                 case ' '  :
                 case '\t' :
                     break;
                 default :
                     printf("no such command : [%%%c]\n", c);
+                    stat = 0;
                     break;
             }
+            continue;
         }
+
         if(2 == stat) {
+            if ('%' == c) {
+                stat = 3;
+                TOYDBG("int stat [%d], get char [%c], set stat to [%d]", 2, c, stat);
+            } else if ('}' == c) {
+                stat = 0;
+                TOYDBG("int stat [%d], get char [%c], set stat to [%d]", 2, c, stat);
+            } else {
+                layout_list[layout_pos].layout_type = _MSG_TYPE_CHAR;
+                layout_list[layout_pos].msg = toy_chrdup(c);
+                layout_pos++;
+                TOYDBG("int stat [%d], get char [%c], set it be a msg [%s]", 2, c, layout_list[layout_pos].msg);
+            }
+            continue;
+        }
+        if(3 == stat) {
             switch(c) {
                 case 'y' :
+                    layout_list[layout_pos++].layout_type = __MSG_TYPE_y;
+                    stat = 2;
                     break;
-
                 case 'Y' :
+                    layout_list[layout_pos++].layout_type = __MSG_TYPE_Y;
+                    stat = 2;
                     break;
-
+                case 'm' :
+                    layout_list[layout_pos++].layout_type = __MSG_TYPE_m;
+                    stat = 2;
+                    break;
                 case 'b' :
+                    layout_list[layout_pos++].layout_type = __MSG_TYPE_b;
+                    stat = 2;
                     break;
-
                 case 'd' :
+                    layout_list[layout_pos++].layout_type = __MSG_TYPE_d;
+                    stat = 2;
                     break;
-
                 case 'u' :
+                    layout_list[layout_pos++].layout_type = __MSG_TYPE_u;
+                    stat = 2;
                     break;
-
                 case 'a' :
+                    layout_list[layout_pos++].layout_type = __MSG_TYPE_a;
+                    stat = 2;
                     break;
-
                 case 'H' :
+                    layout_list[layout_pos++].layout_type = __MSG_TYPE_H;
+                    stat = 2;
                     break;
-
                 case 'I' :
+                    layout_list[layout_pos++].layout_type = __MSG_TYPE_I;
+                    stat = 2;
                     break;
-
                 case 'M' :
+                    layout_list[layout_pos++].layout_type = __MSG_TYPE_M;
+                    stat = 2;
                     break;
-
                 case 'S' :
+                    layout_list[layout_pos++].layout_type = __MSG_TYPE_S;
+                    stat = 2;
                     break;
-
                 case 'l' :
+                    layout_list[layout_pos++].layout_type = __MSG_TYPE_l;
+                    stat = 2;
                     break;
-
+                case '}' :
+                    stat = 0;
+                    break;
                 default :
-                    TOYDBG("what it means : [%c] ?", c);
+                    TOYDBG("what this means : [%c] ?", c);
                     break;
             }
+            continue;
         }
     }
 
-    return -1;
+    return layout_list;
 }
 
 int parse_memory(LogBody * log, const char * mem) {
@@ -158,6 +210,15 @@ int parse_memory(LogBody * log, const char * mem) {
     }
 
     return ret;
+}
+
+char *toy_chrdup(char c) {
+    char szbuf[16] = {0};
+    snprintf(szbuf, sizeof(szbuf) - 1, "%c", c);
+    char * p = strdup(szbuf);
+    //TOYDBG("malloc memory : [%08X]", p);
+
+    return p;
 }
 
 char *toy_strndup(const char *s, size_t n) {
@@ -412,7 +473,7 @@ LogOutput * get_logoutput(char * const* line_list, const char * toyfile) {
     plog -> engine   = toy_strndup(_log_engine, strlen(_log_engine));
     plog -> protocol = toy_strndup(_log_protocol, strlen(_log_protocol));
     plog -> layout   = toy_strndup(_log_layout, strlen(_log_layout));
-    plog -> formatted= parse_layout(plog -> layout);
+    plog -> formatted_layout= parse_layout(plog -> layout);
     plog -> priority = _log_priority;
     plog -> color    = _log_color;
 
