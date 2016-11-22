@@ -39,6 +39,109 @@ int parse_file  (LogBody * log, const char * file) {
     return ret;
 }
 
+LogLayout *parse_layout(const char * layout) {
+    if(NULL == layout) {
+        TOYDBG("layout point is NULL");
+        return NULL;
+    }
+    int len = strlen(layout);
+    LogLayout *layout_list = (LogLayout *)malloc_mem(sizeof(LogLayout) * (len + 1));
+    if (NULL == layout_list) {
+        TOYDBG("get memory for layout list faild");
+        return NULL;
+    }
+    int layout_pos = 0;
+
+    char szbuf[1024] = {0};
+    mzero(szbuf, sizeof(szbuf));
+    int i = 0;
+    int stat = 0;
+    for(i = 0; layout[i] != '\0'; i++) {
+        char c = layout[i];
+        if(0 == stat) {
+            if('%' != c) {
+                continue;
+            } else if('%' == c) {
+                stat = 1;
+                i++;
+            }
+        }
+        c = layout[i];
+        if(1 == stat) {
+            switch(c) {
+                case 'd' :
+                    stat = 2;
+                    int k = i;
+                    for(;layout[k] != '\0'; k++) {
+                        if('{' == layout[k]) {
+                            k++;
+                            i = k;
+                            break;
+                        }
+                    }
+                    break;
+                case 'm' :
+                    layout_list[layout_pos++].layout_type = _MSG_TYPE_m;
+                    break;
+                case 'p' :
+                    layout_list[layout_pos++].layout_type = _MSG_TYPE_p;
+                    break;
+                case 'r' :
+                    layout_list[layout_pos++].layout_type = _MSG_TYPE_r;
+                    break;
+                case ' '  :
+                case '\t' :
+                    break;
+                default :
+                    printf("no such command : [%%%c]\n", c);
+                    break;
+            }
+        }
+        if(2 == stat) {
+            switch(c) {
+                case 'y' :
+                    break;
+
+                case 'Y' :
+                    break;
+
+                case 'b' :
+                    break;
+
+                case 'd' :
+                    break;
+
+                case 'u' :
+                    break;
+
+                case 'a' :
+                    break;
+
+                case 'H' :
+                    break;
+
+                case 'I' :
+                    break;
+
+                case 'M' :
+                    break;
+
+                case 'S' :
+                    break;
+
+                case 'l' :
+                    break;
+
+                default :
+                    TOYDBG("what it means : [%c] ?", c);
+                    break;
+            }
+        }
+    }
+
+    return -1;
+}
+
 int parse_memory(LogBody * log, const char * mem) {
     char ** line_list = NULL;
     if(split_memory(&line_list, mem) < 0) {
@@ -229,6 +332,7 @@ LogOutput * get_logoutput(char * const* line_list, const char * toyfile) {
             value = NULL;
         }
 
+        //get type of toyfile
         if(strncasecmp(pline + len, "type", strlen("type")) == 0) {
             if(get_value(&value, pline) < 0) {
                 TOYDBG("get value of [type] faild");
@@ -247,6 +351,8 @@ LogOutput * get_logoutput(char * const* line_list, const char * toyfile) {
             }
             continue;
         }
+
+        //get file name of toyfile
         if(strncasecmp(pline + len, "file", strlen("file")) == 0) {
             if(get_value(&value, pline) < 0 || '\0' == value[0]) {
                 TOYDBG("get value of [%s] faild", "file");
@@ -306,6 +412,7 @@ LogOutput * get_logoutput(char * const* line_list, const char * toyfile) {
     plog -> engine   = toy_strndup(_log_engine, strlen(_log_engine));
     plog -> protocol = toy_strndup(_log_protocol, strlen(_log_protocol));
     plog -> layout   = toy_strndup(_log_layout, strlen(_log_layout));
+    plog -> formatted= parse_layout(plog -> layout);
     plog -> priority = _log_priority;
     plog -> color    = _log_color;
 

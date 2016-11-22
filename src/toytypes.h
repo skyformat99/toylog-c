@@ -36,15 +36,29 @@ typedef struct
     ToyBitmap map;
 }LogMessage;
 
-#define PATTERN_DATA    1
-#define PATTERN_MESG    2
-typedef struct 
+#define _MSG_TYPE_d     0x100
+#define __MSG_TYPE_y    0x101
+#define __MSG_TYPE_Y    0x102
+#define __MSG_TYPE_m    0x103
+#define __MSG_TYPE_b    0x104
+#define __MSG_TYPE_d    0x105
+#define __MSG_TYPE_u    0x106
+#define __MSG_TYPE_a    0x107
+#define __MSG_TYPE_H    0x108
+#define __MSG_TYPE_I    0x109
+#define __MSG_TYPE_M    0x10a
+#define __MSG_TYPE_s    0x10b
+#define __MSG_TYPE_l    0x10c
+
+#define _MSG_TYPE_m     0x200
+#define _MSG_TYPE_p     0x300
+#define _MSG_TYPE_r     0x400
+#define _MSG_TYPE_CHAR  0x500
+
+typedef struct _LogLayout
 {
-    int type;
-    const char * file_name;
-    FILE * fp;
-    int  color;
-    ToyBitmap *map;
+    int layout_type;
+    char * msg;
 }LogLayout;
 
 typedef struct 
@@ -55,6 +69,7 @@ typedef struct
     char *log_file;
     FILE *out;
     char * layout;
+    LogLayout * fomartted_layout;
     int  priority;
     int  color;
 #ifdef _TOY_MULTI_PTHREAD 
