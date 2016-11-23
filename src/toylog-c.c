@@ -1,4 +1,5 @@
 #include <unistd.h>
+#include "toytypes.h"
 #include "toylog-c.h"
 
 LogBody * _g_Log = NULL;
@@ -365,28 +366,86 @@ const char ** toylog_help()
     return _g_help_info;
 }
 
-int toylog_init_config(const char * config_file)
+int toylog_open_files (LogBody * log) {
+    //TODO
+    return 0;
+}
+
+int toylog_init(const char * config_file)
 {
-    if(NULL == config_file)
-    {
+    if(NULL == config_file) {
         return -1;
     }
-    if(access(config_file, R_OK) != 0)
-    {
+    if(access(config_file, R_OK) != 0) {
         return -1;
     }
-    FILE * fp = fopen(config_file, "r");
-    if(NULL == fp)
-    {
+    _g_Log = (LogBody *)malloc_mem(sizeof(LogBody));
+    if(NULL == _g_Log) {
         return -1;
     }
-    if(fseek(fp, 0, SEEK_END) < 0)
-    {
-        fclose(fp);
+    pthread_mutex_init(&_g_Log -> body_mutex, NULL);// = PTHREAD_MUTEX_INITIALIZER;
+    int ret = 0;
+    pthread_mutex_lock(& _g_Log -> body_mutex);
+    ret = parse_file(_g_Log, config_file);
+    if(0 == ret) {
+        ret = toylog_open_files(_g_Log);
+    }
+    pthread_mutex_unlock(& _g_Log -> body_mutex);
+
+    return ret;
+}
+
+int toylog_priority_set(int priority, const char * toyfile){
+    if(NULL == _g_Log || NULL == _g_Log -> output_list) {
+        TOYDBG("_g_Log or it's output_list is empty");
         return -1;
+    }
+    int i = 0;
+    for(i = 0; i < _g_Log -> list_count; i++) {
+        if(NULL == toyfile) {
+            _g_Log -> output_list[i] -> priority = priority;
+            continue;
+        } else if(strcasecmp(toyfile, _g_Log -> output_list[i] -> log_file) == 0) {
+            _g_Log -> output_list[i] -> priority = priority;
+            break;
+        }
     }
 
     return 0;
 }
 
+int toylog_end() {
+    if(NULL == _g_Log) {
+        TOYDBG("_g_Log is empty");
+        return -1;
+    }
+    LogBody * p = _g_Log;
+    pthread_mutex_lock(& _g_Log -> body_mutex);
+    free_logbody(_g_Log);
+    _g_Log = NULL;
+    pthread_mutex_unlock(& p -> body_mutex);
+    free_mem(p);
+
+    return 0;
+}
+
+int toyLog_write_files(int priority, const char * fmt, va_list arg_list) {
+    //TODO
+    return 0;
+}
+
+int toyLog_write_log(int priority, const char * fmt, ...) {
+    if(check_object() < 0) {
+        return -1;
+    }
+
+    va_list argptr;
+    int ret;
+
+    va_start(argptr, fmt);
+    ret = toyLog_write_files(priority, fmt, argptr);
+    va_end(argptr);
+
+    return ret;
+}
 

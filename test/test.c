@@ -100,8 +100,8 @@ void test_info()
 void test_parser()
 {
     const char * file_name = "./config.cfg";
-    LogBody log;
-    parse_file(&log, file_name);
+    toylog_init(file_name);
+    toylog_end();
 }
 
 int main(int argc, char * argv[])

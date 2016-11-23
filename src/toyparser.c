@@ -203,11 +203,13 @@ int parse_memory(LogBody * log, const char * mem) {
     int ret = parse_lines(log, line_list);
     free_line_list(&line_list);
 
+#ifdef TOYDEBUG
     //XXX for debug
     int i = 0;
     for(i = 0; NULL != log -> output_list && NULL != log -> output_list[i]; i++) {
         show_logoutput(log -> output_list[i]);
     }
+#endif
 
     return ret;
 }
@@ -464,6 +466,10 @@ LogOutput * get_logoutput(char * const* line_list, const char * toyfile) {
             continue;
         }
     }
+    if(NULL != value) {
+        free_mem(value);
+        value = NULL;
+    }
     LogOutput * plog = (LogOutput *)malloc_mem(sizeof(LogOutput));
     if(NULL == plog) {
         return NULL;
@@ -485,11 +491,13 @@ int parse_lines(LogBody * log, char * const* line_list) {
         return -1;
     }
 
+#ifdef TOYDEBUG
     //XXX for debug, show lines
     int i = 0; 
     for(i = 0; line_list[i] != NULL; i++) {
         printf("[%s]\n", line_list[i]);
     }
+#endif 
 
     char **file_list = NULL;
     if(get_toyfile_list(&file_list, line_list) < 0) {
@@ -497,12 +505,12 @@ int parse_lines(LogBody * log, char * const* line_list) {
         return -1;
     }
 
-    int count = 0;
     for(i = 0; file_list[i] != NULL; i++) {
+#ifdef TOYDEBUG
         TOYDBG("file : [%s]", file_list[i]);
+#endif 
     }
-    count = i;
-    int pos = 0;
+    int count = i;
     LogOutput ** log_list = (LogOutput **)malloc_mem(sizeof(LogOutput *) * (count + 1));
     if(NULL == log_list) {
         TOYDBG("get memory faild");
@@ -515,7 +523,8 @@ int parse_lines(LogBody * log, char * const* line_list) {
             TOYDBG("get logoutput of toyfile [%s] faild", file_list[i]);
             continue;
         }
-        log_list[pos++] = pout;
+        pthread_mutex_init(& pout -> file_mutex, NULL);// = PTHREAD_MUTEX_INITIALIZER;
+        log_list[log -> list_count ++] = pout;
     }
 
     free_line_list(&file_list);
@@ -746,5 +755,49 @@ void free_line_list(char *** line_list) {
     }
     free_mem(list);
     *line_list = NULL;
+}
+
+int free_layout(LogOutput * layout) {
+    if(NULL == layout) {
+        return -1;
+    }
+    layout -> log_type = 0;
+    free_mem(layout -> engine);
+    free_mem(layout -> protocol);
+    free_mem(layout -> log_file);
+    if(NULL != layout -> out) {
+        fclose(layout -> out);
+    }
+    free_mem(layout -> layout);
+    int i = 0;
+    for(i = 0; layout -> formatted_layout[i].layout_type != 0; i++) {
+        if(NULL != layout -> formatted_layout[i].msg) {
+            free_mem(layout -> formatted_layout[i].msg);
+            layout -> formatted_layout[i].msg = NULL;
+        }
+    }
+    free_mem(layout -> formatted_layout);
+    layout -> priority = 0;
+    layout -> color = 0;
+    free_mem(layout);
+
+    return 0;
+}
+
+int free_logbody(LogBody * log) {
+    if(NULL == log) {
+        return -1;
+    }
+    int i = 0;
+    for(i = 0; i < log -> list_count; i++) {
+        LogOutput * pl = log -> output_list[i];
+        pthread_mutex_lock(& pl -> file_mutex);
+        free_layout(pl);
+        pthread_mutex_unlock(& pl -> file_mutex);
+    }
+    free_mem(log -> output_list);
+    log -> output_list = NULL;
+
+    return 0;
 }
 

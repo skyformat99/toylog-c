@@ -6,6 +6,7 @@
 #include <stdarg.h>
 #include "toytypes.h"
 #include "toyparser.h"
+#include "toydebug.h"
 
 #define toylog_fatal   (fmt, arg...) \
     do{\
@@ -64,11 +65,12 @@
 
 const char * toylog_version();
 const char ** toylog_help();
-
-int toylog_init_config(const char * config_file);
-int toylog_priority_set(int priority);
-int toylog_priority_filter(int priority);
+int toylog_init(const char * config_file);
+int toylog_priority_set(int priority, const char * toyfile);
 int toylog_end();
+int toylog_write_log(int priority, const char * fmt, ...);
+
+int toylog_priority_filter(int priority);
 
 #endif
 

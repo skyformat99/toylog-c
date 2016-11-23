@@ -3,7 +3,7 @@
 #include <stdio.h>
 #include "toybitmap.h"
 
-//#define _TOY_MULTI_PTHREAD 
+#define _TOY_MULTI_PTHREAD 
 #ifdef _TOY_MULTI_PTHREAD
 #include <pthread.h>
 #endif
@@ -79,6 +79,7 @@ typedef struct
 
 typedef struct
 {
+    int list_count;
     LogOutput ** output_list;
 #ifdef _TOY_MULTI_PTHREAD 
     pthread_mutex_t body_mutex;

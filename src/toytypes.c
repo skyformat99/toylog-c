@@ -72,7 +72,9 @@ void show_logoutput(LogOutput * log) {
     TOYDBG("formatted_layout :");
     int i = 0;
     for(i = 0; NULL != log -> formatted_layout && 0 != log -> formatted_layout[i].layout_type; i++) {
-        TOYDBG("\ttype : [%03x], msg  : [%s]", log -> formatted_layout[i].layout_type, NULL == log -> formatted_layout[i].msg ? "" : log -> formatted_layout[i].msg);
+        TOYDBG("\ttype : [%03x], msg  : [%s]", 
+                log -> formatted_layout[i].layout_type, 
+                NULL == log -> formatted_layout[i].msg ? "" : log -> formatted_layout[i].msg);
     }
     TOYDBG("==============================");
 }
