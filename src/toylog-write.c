@@ -15,5 +15,13 @@
  *
  * =====================================================================================
  */
+#include <stdio.h>
+
+int toylog_write(LogOutput * output, int priority, const char * fmt, va_list arg_list) {
+    if(NULL == output) {
+        return -1;
+    }
+    
+}
 
 

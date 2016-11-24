@@ -28,7 +28,7 @@ int toylog_write_console(LogOutput * output, int priority, const char * fmt, va_
     if (NULL == formatted_layout) {
         vfprintf(stdout, fmt, arg_list);
     } else {
-        ret = ;
+        ret = toylog_write(output, priority, fmt, arg_list);
     }
     pthread_mutex_unlock(& log -> body_mutex);
 
