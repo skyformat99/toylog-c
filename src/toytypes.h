@@ -70,6 +70,8 @@ typedef struct
     FILE *out;
     char * layout;
     LogLayout * formatted_layout;
+    char *compiled_font;
+    char *compiled_tail;
     int  priority;
     int  color;
 #ifdef _TOY_MULTI_PTHREAD 
@@ -88,6 +90,7 @@ typedef struct
 
 int toylog_convert_priority(const char * priority);
 void show_logoutput(LogOutput * log);
+int toylog_check_priority(int priority);
 
 #endif /* end file */
 
