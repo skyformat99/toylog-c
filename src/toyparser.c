@@ -801,3 +801,18 @@ int free_logbody(LogBody * log) {
     return 0;
 }
 
+int toylog_localtime(struct tm * t, time_t *lt) {
+    if(NULL == t) {
+        return -1;
+    }
+    static pthread_mutex_t _time_mutex = PTHREAD_MUTEX_INITIALIZER;
+    pthread_mutex_lock(&_time_mutex);
+    struct tm * tx = localtime(lt);
+    if(NULL != tx) {
+        memcpy(t, tx, sizeof(struct tm));
+    }
+    pthread_mutex_unlock(&_time_mutex);
+
+    return 0;
+}
+

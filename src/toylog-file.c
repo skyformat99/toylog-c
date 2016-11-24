@@ -19,6 +19,6 @@
 #include "toylog-file.h"
 
 int toylog_write_file(int priority, const char * fmt, ...) {
-
+    return 0;
 }
 

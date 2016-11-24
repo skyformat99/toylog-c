@@ -1,6 +1,8 @@
 #ifndef _TOYTYPES_H_
 #define _TOYTYPES_H_
 #include <stdio.h>
+#include <sys/time.h>
+#include <time.h>
 #include "toybitmap.h"
 
 #define _TOY_MULTI_PTHREAD 
@@ -74,6 +76,7 @@ typedef struct
     char *compiled_tail;
     int  priority;
     int  color;
+    struct timeval start;
 #ifdef _TOY_MULTI_PTHREAD 
     pthread_mutex_t file_mutex;
 #endif
@@ -91,6 +94,11 @@ typedef struct
 int toylog_convert_priority(const char * priority);
 void show_logoutput(LogOutput * log);
 int toylog_check_priority(int priority);
+int toylog_localtime(struct tm * t, time_t *lt);
+const char * month_to_simple(int mon);
+const char * week_to_full(int week);
+const char * week_to_simple(int week);
+const char * toylog_priority_str(int priority);
 
 #endif /* end file */
 

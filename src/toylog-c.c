@@ -435,6 +435,7 @@ int toyLog_write_files(int priority, const char * fmt, va_list arg_list) {
 }
 
 int toylog_check_object(LogBody * log) {
+    return 0;
 }
 
 int toyLog_write_log(int priority, const char * fmt, ...) {
