@@ -101,6 +101,19 @@ void test_parser()
 {
     const char * file_name = "./config.cfg";
     toylog_init(file_name);
+
+    toylog_fatal("compile time : %s %s, line : %d", __TIME__, __DATE__, __LINE__);
+    toylog_alert("compile time : %s %s, line : %d", __TIME__, __DATE__, __LINE__);
+    toylog_crit("compile time : %s %s, line : %d", __TIME__, __DATE__, __LINE__);
+    toylog_error("compile time : %s %s, line : %d", __TIME__, __DATE__, __LINE__);
+    toylog_warn("compile time : %s %s, line : %d", __TIME__, __DATE__, __LINE__);
+    toylog_notice("compile time : %s %s, line : %d", __TIME__, __DATE__, __LINE__);
+    toylog_info("compile time : %s %s, line : %d", __TIME__, __DATE__, __LINE__);
+    toylog_debug("compile time : %s %s, line : %d", __TIME__, __DATE__, __LINE__);
+    toylog_race("compile time : %s %s, line : %d", __TIME__, __DATE__, __LINE__);
+    toylog_notset("compile time : %s %s, line : %d", __TIME__, __DATE__, __LINE__);
+    toylog_unknown("compile time : %s %s, line : %d", __TIME__, __DATE__, __LINE__);
+
     toylog_end();
 }
 
@@ -128,27 +141,6 @@ int main(int argc, char * argv[])
 //        }
 //    }
 //
-//    toylog_fatal("compile time : %s %s, line : %d", __TIME__, __DATE__, __LINE__);
-//
-//    toylog_alert("compile time : %s %s, line : %d", __TIME__, __DATE__, __LINE__);
-//
-//    toylog_crit("compile time : %s %s, line : %d", __TIME__, __DATE__, __LINE__);
-//
-//    toylog_error("compile time : %s %s, line : %d", __TIME__, __DATE__, __LINE__);
-//
-//    toylog_warn("compile time : %s %s, line : %d", __TIME__, __DATE__, __LINE__);
-//
-//    toylog_notice("compile time : %s %s, line : %d", __TIME__, __DATE__, __LINE__);
-//
-//    toylog_info("compile time : %s %s, line : %d", __TIME__, __DATE__, __LINE__);
-//
-//    toylog_debug("compile time : %s %s, line : %d", __TIME__, __DATE__, __LINE__);
-//
-//    toylog_race("compile time : %s %s, line : %d", __TIME__, __DATE__, __LINE__);
-//
-//    toylog_notset("compile time : %s %s, line : %d", __TIME__, __DATE__, __LINE__);
-//
-//    toylog_unknown("compile time : %s %s, line : %d", __TIME__, __DATE__, __LINE__);
 
     return 0;
 }

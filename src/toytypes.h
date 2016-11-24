@@ -31,7 +31,6 @@
 #define LOG_TYPE_DB     4
 #define LOG_TYPE_WEB    5
 
-
 typedef struct
 {
     const char * config;

@@ -8,57 +8,57 @@
 #include "toyparser.h"
 #include "toydebug.h"
 
-#define toylog_fatal   (fmt, arg...) \
+#define toylog_fatal(fmt, arg...) \
     do{\
         toylog_write_log(TOYLOG_PRIORITY_FATAL, fmt, ##arg);\
     }while(0)
 
-#define toylog_alert   (fmt, arg...)  \
+#define toylog_alert(fmt, arg...)  \
     do{\
         toylog_write_log(TOYLOG_PRIORITY_ALERT, fmt, ##arg);\
     }while(0)
 
-#define toylog_crit    (fmt, arg...)  \
+#define toylog_crit(fmt, arg...)  \
     do{\
         toylog_write_log(TOYLOG_PRIORITY_CRIT, fmt, ##arg);\
     }while(0)
 
-#define toylog_error   (fmt, arg...)  \
+#define toylog_error(fmt, arg...)  \
     do{\
         toylog_write_log(TOYLOG_PRIORITY_ERROR, fmt, ##arg);\
     }while(0)
 
-#define toylog_warn    (fmt, arg...)  \
+#define toylog_warn(fmt, arg...)  \
     do{\
         toylog_write_log(TOYLOG_PRIORITY_WARN, fmt, ##arg);\
     }while(0)
 
-#define toylog_notice  (fmt, arg...)  \
+#define toylog_notice(fmt, arg...)  \
     do{\
         toylog_write_log(TOYLOG_PRIORITY_NOTICE, fmt, ##arg);\
     }while(0)
 
-#define toylog_info    (fmt, arg...)  \
+#define toylog_info(fmt, arg...)  \
     do{\
         toylog_write_log(TOYLOG_PRIORITY_INFO, fmt, ##arg);\
     }while(0)
 
-#define toylog_debug   (fmt, arg...)  \
+#define toylog_debug(fmt, arg...)  \
     do{\
         toylog_write_log(TOYLOG_PRIORITY_DEBUG, fmt, ##arg);\
     }while(0)
 
-#define toylog_race    (fmt, arg...)  \
+#define toylog_race(fmt, arg...)  \
     do{\
         toylog_write_log(TOYLOG_PRIORITY_RACE, fmt, ##arg);\
     }while(0)
 
-#define toylog_notset  (fmt, arg...)  \
+#define toylog_notset(fmt, arg...)  \
     do{\
         toylog_write_log(TOYLOG_PRIORITY_NOTSET, fmt, ##arg);\
     }while(0)
 
-#define toylog_unknown (fmt, arg...)  \
+#define toylog_unknown(fmt, arg...)  \
     do{\
         toylog_write_log(TOYLOG_PRIORITY_UNKNOWN, fmt, ##arg);\
     }while(0)

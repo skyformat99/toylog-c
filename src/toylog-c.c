@@ -1,6 +1,7 @@
 #include <unistd.h>
 #include "toytypes.h"
 #include "toylog-c.h"
+#include "toylog-console.h"
 
 LogBody * _g_Log = NULL;
 const char * _g_version = "0.1.1";
@@ -366,8 +367,31 @@ const char ** toylog_help()
     return _g_help_info;
 }
 
+int toylog_open_file(LogOutput * output) {
+    if(NULL == output) {
+        return -1;
+    }
+    gettimeofday(& output -> start, NULL);
+    switch(output -> log_type) {
+        case LOG_TYPE_CONCLE :
+            output -> out = stdout;
+            break;
+        default :
+            break;
+    }
+
+    return 0;
+}
+
 int toylog_open_files (LogBody * log) {
-    //TODO
+    if(NULL == log) {
+        return -1;
+    }
+    int i = 0;
+    for(i = 0; i < log -> list_count; i++) {
+        toylog_open_file(log -> output_list[i]);
+    }
+
     return 0;
 }
 
@@ -430,7 +454,17 @@ int toylog_end() {
 }
 
 int toyLog_write_files(int priority, const char * fmt, va_list arg_list) {
-    //TODO
+    int i = 0; 
+    for(i = 0; i < _g_Log -> list_count; i++) {
+        switch(_g_Log -> output_list[i] -> log_type) {
+            case LOG_TYPE_CONCLE :
+                toylog_write_console(_g_Log -> output_list[i], priority, fmt, arg_list);
+                break;
+            default :
+                break;
+        }
+    }
+
     return 0;
 }
 
@@ -438,7 +472,7 @@ int toylog_check_object(LogBody * log) {
     return 0;
 }
 
-int toyLog_write_log(int priority, const char * fmt, ...) {
+int toylog_write_log(int priority, const char * fmt, ...) {
     if(toylog_check_object(_g_Log) < 0) {
         return -1;
     }
