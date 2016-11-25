@@ -761,6 +761,28 @@ void free_line_list(char *** line_list) {
     *line_list = NULL;
 }
 
+int close_file(LogOutput * layout) {
+    if(NULL == layout) {
+        return -1;
+    }
+    int ret = 0;
+    switch(layout -> log_type) {
+        case LOG_TYPE_CONCLE :
+            ret = 0;
+            break;
+        case LOG_TYPE_FILE :
+            if (NULL != layout -> out) {
+                fclose(layout -> out);
+                layout -> out = NULL;
+            }
+            break;
+        default :
+            break;
+    }
+
+    return ret;
+}
+
 int free_layout(LogOutput * layout) {
     if(NULL == layout) {
         return -1;

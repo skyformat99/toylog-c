@@ -376,6 +376,11 @@ int toylog_open_file(LogOutput * output) {
         case LOG_TYPE_CONCLE :
             output -> out = stdout;
             break;
+        case LOG_TYPE_FILE :
+            if(NULL != output -> log_file) {
+                output -> out = fopen(output -> log_file, "a");
+            }
+            break;
         default :
             break;
     }
@@ -469,6 +474,10 @@ int toyLog_write_files(int priority, const char * fmt, va_list arg_list) {
 }
 
 int toylog_check_object(LogBody * log) {
+    if(NULL == log) {
+        return -1;
+    }
+
     return 0;
 }
 
