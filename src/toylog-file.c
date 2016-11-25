@@ -17,8 +17,9 @@
  */
 #include <stdio.h>
 #include "toylog-file.h"
+#include "toylog-write.h"
 
-int toylog_write_file(int priority, const char * fmt, ...) {
+int toylog_write_file(LogOutput * output, int priority, const char * fmt, va_list arg_list) {
     return 0;
 }
 

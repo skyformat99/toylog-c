@@ -22,7 +22,7 @@ ALL_FILE= test
 all : $(ALL_FILE)
 
 clean : dummy
-	rm -rf *.o *.log $(ALL_FILE)
+	rm -rf *.o $(ALL_FILE)
 
 tags : dummy
 	@ctags -R --fields=+iaS --extra=+q

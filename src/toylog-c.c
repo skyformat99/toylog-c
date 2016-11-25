@@ -1,7 +1,7 @@
 #include <unistd.h>
 #include "toytypes.h"
 #include "toylog-c.h"
-#include "toylog-console.h"
+#include "toylog-write.h"
 
 LogBody * _g_Log = NULL;
 const char * _g_version = "0.1.1";
@@ -461,13 +461,9 @@ int toylog_end() {
 int toyLog_write_files(int priority, const char * fmt, va_list arg_list) {
     int i = 0; 
     for(i = 0; i < _g_Log -> list_count; i++) {
-        switch(_g_Log -> output_list[i] -> log_type) {
-            case LOG_TYPE_CONCLE :
-                toylog_write_console(_g_Log -> output_list[i], priority, fmt, arg_list);
-                break;
-            default :
-                break;
-        }
+        va_list arg_screen;
+        va_copy(arg_screen, arg_list);
+        toylog_write_mutex(_g_Log -> output_list[i], priority, fmt, arg_screen);
     }
 
     return 0;

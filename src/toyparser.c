@@ -495,9 +495,9 @@ int parse_lines(LogBody * log, char * const* line_list) {
         return -1;
     }
 
+    int i = 0; 
 #ifdef TOYDEBUG
     //XXX for debug, show lines
-    int i = 0; 
     for(i = 0; line_list[i] != NULL; i++) {
         printf("[%s]\n", line_list[i]);
     }
@@ -792,7 +792,7 @@ int free_layout(LogOutput * layout) {
     free_mem(layout -> protocol);
     free_mem(layout -> log_file);
     if(NULL != layout -> out) {
-        fclose(layout -> out);
+        close_file(layout);
     }
     free_mem(layout -> layout);
     int i = 0;

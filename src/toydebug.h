@@ -8,6 +8,9 @@
         printf(fmt, ##arg);\
         printf("\n");\
     }while(0)
+
+#else
+#define TOYDBG(fmt, arg...) 
 #endif
 
 #endif /* end file */

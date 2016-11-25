@@ -3,7 +3,8 @@
 CC	= gcc -g
 CXX	= g++ -g 
 MAKE= $(CC)
-CFLAGS	= -Wall -I./ -DTOYDEBUG
+#CFLAGS	= -Wall -I./ -DTOYDEBUG
+CFLAGS	= -Wall -I./ 
 LDFLAGS	= 
 ALL_FILE= libtoylog.so libtoylog.a
 
@@ -44,8 +45,6 @@ libtoylog.a : toylog-c.os \
 	toybitmap.os \
 	toyparser.os \
 	toytypes.os \
-	toylog-console.os \
-	toylog-file.os \
 	toylog-write.os
 	ar cr $@ $^
 
@@ -53,8 +52,6 @@ libtoylog.so : toylog-c.os \
 	toybitmap.os \
 	toyparser.os \
 	toytypes.os \
-	toylog-console.os \
-	toylog-file.os \
 	toylog-write.os
 	$(MAKE) -shared -Wl,-soname,$@ -o $@ $^ -lc $(LDFLAGS) 
 

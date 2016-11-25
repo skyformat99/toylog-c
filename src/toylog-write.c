@@ -16,17 +16,15 @@
  * =====================================================================================
  */
 #include <stdio.h>
+#include "toydebug.h"
 #include "toytypes.h"
 
-int toylog_write_msg(const char * fmt, va_list arg_list) {
-}
-
-int toylog_write(LogOutput * output, int priority, const char * fmt, va_list arg_list) {
+int toylog_write_file(LogOutput * output, int priority, const char * fmt, va_list arg_list) {
     if(NULL == output) {
         return -1;
     }
-    if (NULL == output -> formatted_layout) {
-        vfprintf(, fmt, arg_list);
+    if (NULL == output -> formatted_layout && NULL != output -> out) {
+        vfprintf(output -> out, fmt, arg_list);
         return 0;
     } 
     struct timeval start;
@@ -34,11 +32,11 @@ int toylog_write(LogOutput * output, int priority, const char * fmt, va_list arg
     struct tm t;
     mzero(&t, sizeof(t));
     toylog_localtime(&t, &start.tv_sec);
-    FILE * fp = stdout;
     int i = 0;
     for(i = 0; output -> formatted_layout[i].layout_type != 0; i++) {
         int  type = output -> formatted_layout[i].layout_type;
         char *msg = output -> formatted_layout[i].msg;
+        FILE * fp = output -> out;
 
         switch(type) {
             case __MSG_TYPE_y : 
@@ -93,8 +91,32 @@ int toylog_write(LogOutput * output, int priority, const char * fmt, va_list arg
             default :
                 break;
         }
+        fflush(fp);
     }
 
     return 0;
+}
+
+int toylog_write_mutex(LogOutput * output, int priority, const char * fmt, va_list arg_list) {
+    if(NULL == output) {
+        return -1;
+    }
+    int ret = 0;
+    pthread_mutex_lock(& output -> file_mutex);
+        switch(output -> log_type) {
+            case LOG_TYPE_CONCLE :
+                TOYDBG("write console");
+                toylog_write_file(output, priority, fmt, arg_list);
+                break;
+            case LOG_TYPE_FILE :
+                TOYDBG("write file");
+                toylog_write_file(output, priority, fmt, arg_list);
+                break;
+            default :
+                break;
+        }
+    pthread_mutex_unlock(& output -> file_mutex);
+
+    return ret;
 }
 
