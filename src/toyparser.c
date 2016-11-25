@@ -76,6 +76,10 @@ LogLayout *parse_layout(const char * layout) {
                         TOYDBG("what this means : [%c] ? ", c);
                         break;
                 }
+            } else {
+                layout_list[layout_pos].layout_type = _MSG_TYPE_CHAR;
+                layout_list[layout_pos].msg = toy_chrdup(c);
+                layout_pos++;
             }
             continue;
         }

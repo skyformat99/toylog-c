@@ -80,7 +80,7 @@ int toylog_write_console(LogOutput * output, int priority, const char * fmt, va_
                     vfprintf(stdout, fmt, arg_list);
                     break;
                 case _MSG_TYPE_p :
-                    fprintf(stdout, "%s", toylog_priority_str(type));
+                    fprintf(stdout, "[%s]", toylog_priority_str(priority));
                     break;
                 case _MSG_TYPE_r :
                     fprintf(stdout, "%ld", (start.tv_sec - output -> start.tv_sec) * 1000 + 
