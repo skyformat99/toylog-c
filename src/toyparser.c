@@ -56,7 +56,7 @@ LogLayout *parse_layout(const char * layout) {
     int k = 0;
     int i = 0;
     int stat = 0;
-    for(i = 0; layout[i] != '\0'; i++) {
+    for(i = 0; layout[i] != '\0' && i < len; i++) {
         char c = layout[i];
         TOYDBG("stat [%d], char [%c]", stat, c);
         if(0 == stat) {
