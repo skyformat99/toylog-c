@@ -13,6 +13,7 @@ int free_logbody(LogBody * log);
 
 int get_first_not_of(const char * p, int len, const char * sub);
 void free_mem(void * p);
+void *mzero(void *s, int n);
 void *malloc_mem(size_t size);
 char *toy_chrdup(char c);
 char *toy_strndup(const char *s, size_t n);

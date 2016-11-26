@@ -47,40 +47,40 @@ void usage(const char * exename)
 
 void test_bitmap()
 {
-    printf("test ToyBitmap\n");
-
-    int x = init_map_size(NULL, 1);
-    TEST_EQ(-1, x);
-
-    ToyBitmap map;
-    x = init_map_size(&map, 10);
-
-    x = set_map_value(&map, -1, 123);
-    TEST_EQ(-1, x);
-
-    x = set_map_value(&map, 10, 123);
-    TEST_EQ(-1, x);
-
-    int i = 0;
-    for(i = 0; i < 10; i++)
-    {
-        x = set_map_value(&map, i, i + 10);
-        TEST_EQ(0, x);
-    }
-
-    char c = get_map_value(&map, -1);
-    TEST_EQ(-1, c);
-
-    c = get_map_value(&map, 10);
-    TEST_EQ(-1, c);
-
-    for(i = 0; i < 10; i++)
-    {
-        c = get_map_value(&map, i);
-        TEST_EQ(c, i + 10);
-    }
-
-    free_map(&map);
+//    printf("test ToyBitmap\n");
+//
+//    int x = init_map_size(NULL, 1);
+//    TEST_EQ(-1, x);
+//
+//    ToyBitmap map;
+//    x = init_map_size(&map, 10);
+//
+//    x = set_map_value(&map, -1, 123);
+//    TEST_EQ(-1, x);
+//
+//    x = set_map_value(&map, 10, 123);
+//    TEST_EQ(-1, x);
+//
+//    int i = 0;
+//    for(i = 0; i < 10; i++)
+//    {
+//        x = set_map_value(&map, i, i + 10);
+//        TEST_EQ(0, x);
+//    }
+//
+//    char c = get_map_value(&map, -1);
+//    TEST_EQ(-1, c);
+//
+//    c = get_map_value(&map, 10);
+//    TEST_EQ(-1, c);
+//
+//    for(i = 0; i < 10; i++)
+//    {
+//        c = get_map_value(&map, i);
+//        TEST_EQ(c, i + 10);
+//    }
+//
+//    free_map(&map);
 }
 
 void test_info()

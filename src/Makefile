@@ -42,14 +42,12 @@ inc : dummy
 ##############################
 
 libtoylog.a : toylog-c.os \
-	toybitmap.os \
 	toyparser.os \
 	toytypes.os \
 	toylog-write.os
 	ar cr $@ $^
 
 libtoylog.so : toylog-c.os \
-	toybitmap.os \
 	toyparser.os \
 	toytypes.os \
 	toylog-write.os

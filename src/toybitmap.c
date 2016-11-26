@@ -17,17 +17,8 @@
  */
 #include <stdlib.h>
 #include <string.h>
+#include "toytypes.h"
 #include "toybitmap.h"
-
-void *mzero(void *s, int n)
-{
-    if(NULL == s || n <= 0)
-    {
-        return s;
-    }
-
-    return memset(s, 0, n);
-}
 
 int init_map_size(ToyBitmap * map, int size)
 {

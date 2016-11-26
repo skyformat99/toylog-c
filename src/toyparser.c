@@ -234,6 +234,14 @@ char *toy_strndup(const char *s, size_t n) {
     return p;
 }
 
+void *mzero(void *s, int n) {
+    if(NULL == s || n <= 0) {
+        return s;
+    }
+
+    return memset(s, 0, n);
+}
+
 void *malloc_mem(size_t size) {
     void * p = malloc(size);
     //TOYDBG("malloc memory : [%08X]", p);
