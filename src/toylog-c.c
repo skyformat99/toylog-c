@@ -378,6 +378,7 @@ int toylog_open_file(LogOutput * output) {
             break;
         case LOG_TYPE_FILE :
             if(NULL != output -> log_file) {
+                TOYDBG("open file : [%s]", output -> log_file);
                 output -> out = fopen(output -> log_file, "a");
             }
             break;

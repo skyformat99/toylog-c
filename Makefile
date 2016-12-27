@@ -3,7 +3,7 @@
 CC	= gcc -g
 CXX	= g++ -g 
 MAKE= $(CC)
-CFLAGS	= -Wall -I./ 
+CFLAGS	= -Wall -I./ -DTOYDEBUG
 LDFLAGS	= 
 ALL_FILE= src
 

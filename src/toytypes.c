@@ -120,7 +120,9 @@ void show_logoutput(LogOutput * log) {
     }
     TOYDBG("==============================");
     TOYDBG("type     = [%d]", log -> log_type);
-    TOYDBG("file     = [%s]", log -> log_file);
+    TOYDBG("filename = [%s]", log -> log_file);
+    TOYDBG("filesize = [%lu]", log -> filesize);
+    TOYDBG("filecount= [%d]", log -> filecount);
     TOYDBG("engine   = [%s]", log -> engine);
     TOYDBG("protocol = [%s]", log -> protocol);
     TOYDBG("layout   = [%s]", log -> layout);

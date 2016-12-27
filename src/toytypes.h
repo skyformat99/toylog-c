@@ -68,6 +68,8 @@ typedef struct
     char *engine;
     char *protocol;
     char *log_file;
+    unsigned long int filesize;
+    int  filecount;
     FILE *out;
     char * layout;
     LogLayout * formatted_layout;

@@ -97,6 +97,14 @@ int toylog_write_file(LogOutput * output, int priority, const char * fmt, va_lis
     return 0;
 }
 
+int toylog_file_full(LogOutput * output) {
+    return 0;
+}
+
+int toylog_adjust_file(LogOutput * output) {
+    return 0;
+}
+
 int toylog_write_mutex(LogOutput * output, int priority, const char * fmt, va_list arg_list) {
     if(NULL == output) {
         return -1;
@@ -110,6 +118,9 @@ int toylog_write_mutex(LogOutput * output, int priority, const char * fmt, va_li
                 break;
             case LOG_TYPE_FILE :
                 TOYDBG("write file");
+                if(toylog_file_full(output)) {
+                    toylog_adjust_file(output);
+                }
                 toylog_write_file(output, priority, fmt, arg_list);
                 break;
             default :

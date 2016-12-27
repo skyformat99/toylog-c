@@ -379,13 +379,72 @@ int get_toyfile_list(char *** file_list, char * const * line_list) {
     return 0;
 }
 
+unsigned long int toylog_parse_file_size(const char * value) {
+    if(NULL == value) {
+        return 0;
+    }
+    char *p = NULL;
+    unsigned long int x = strtoul(value, &p, 0);
+    if(p == value) {
+        //error
+        return 0;
+    }
+    unsigned long int KB = 1024;
+    unsigned long int MB = KB * 1024;
+    unsigned long int GB = MB * 1024;
+    unsigned long int TB = GB * 1024;
+    unsigned long int PB = TB * 1024;
+    int ok = 0;
+    int i = 0;
+    for(i = 0; p[i] != '\0'; i++) {
+        switch(p[i]) {
+            case ' ' :
+            case '\t' :
+                break;
+            case 'k' :
+            case 'K' :
+                x = KB;
+                ok = 1;
+                break;
+            case 'M' :
+            case 'm' :
+                x = MB;
+                ok = 1;
+                break;
+            case 'g' :
+            case 'G' :
+                x = GB;
+                ok = 1;
+                break;
+            case 't' :
+            case 'T' :
+                x = TB;
+                break;
+            case 'p' :
+            case 'P' :
+                x = PB;
+                ok = 1;
+            default :
+                ok = 1;
+                break;
+        }
+        if(ok) {
+            break;
+        }
+    }
+
+    return x;
+}
+
 LogOutput * get_logoutput(char * const* line_list, const char * toyfile) {
     if(NULL == line_list || NULL == toyfile) {
         return NULL;
     }
 
     int  _log_type = 0;
-    char _log_file[MAX_FILE_NAME_LEN] = {0};
+    char _log_filename[MAX_FILE_NAME_LEN] = {0};
+    unsigned long int  _log_filesize = 0;
+    long int  _log_filecount = 0;
     char _log_engine[MAX_FILE_NAME_LEN] = {0};
     char _log_protocol[MAX_FILE_NAME_LEN] = {0};
     char _log_layout[MAX_FILE_NAME_LEN] = {0};
@@ -428,11 +487,29 @@ LogOutput * get_logoutput(char * const* line_list, const char * toyfile) {
         }
 
         //get file name of toyfile
-        if(strncasecmp(pline + len, "file", strlen("file")) == 0) {
+        if(strncasecmp(pline + len, "filename", strlen("filename")) == 0) {
             if(get_value(&value, pline) < 0 || '\0' == value[0]) {
-                TOYDBG("get value of [%s] faild", "file");
+                TOYDBG("get value of [%s] faild", "filename");
             } else {
-                snprintf(_log_file, sizeof(_log_file) - 1, value);
+                snprintf(_log_filename, sizeof(_log_filename) - 1, value);
+            }
+            continue;
+        }
+        //get a part file max size  
+        if(strncasecmp(pline + len, "filesize", strlen("filesize")) == 0) {
+            if(get_value(&value, pline) < 0 || '\0' == value[0]) {
+                TOYDBG("get value of [%s] faild", "filesize");
+            } else {
+                _log_filesize = toylog_parse_file_size(value);
+            }
+            continue;
+        }
+        //get file count
+        if(strncasecmp(pline + len, "filecount", strlen("filecount")) == 0) {
+            if(get_value(&value, pline) < 0 || '\0' == value[0]) {
+                TOYDBG("get value of [%s] faild", "filecount");
+            } else {
+                _log_filecount = strtol(value, NULL, 0);
             }
             continue;
         }
@@ -487,7 +564,9 @@ LogOutput * get_logoutput(char * const* line_list, const char * toyfile) {
         return NULL;
     }
     plog -> log_type = _log_type;
-    plog -> log_file = toy_strndup(_log_file, strlen(_log_file));
+    plog -> log_file = toy_strndup(_log_filename, strlen(_log_filename));
+    plog -> filesize = _log_filesize;
+    plog -> filecount = _log_filecount;
     plog -> engine   = toy_strndup(_log_engine, strlen(_log_engine));
     plog -> protocol = toy_strndup(_log_protocol, strlen(_log_protocol));
     plog -> layout   = toy_strndup(_log_layout, strlen(_log_layout));
