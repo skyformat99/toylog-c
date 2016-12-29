@@ -443,7 +443,7 @@ LogOutput * get_logoutput(char * const* line_list, const char * toyfile) {
         return NULL;
     }
 
-    int  _log_type = 0;
+    int  _log_type = -1;
     char _log_filename[MAX_FILE_NAME_LEN] = {0};
     char _log_file[MAX_FILE_NAME_LEN] = {0};
     char _log_dir[MAX_FILE_NAME_LEN] = {0};

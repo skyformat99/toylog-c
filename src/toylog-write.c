@@ -171,6 +171,9 @@ int toylog_write_mutex(LogOutput * output, int priority, const char * fmt, va_li
     if(NULL == output) {
         return -1;
     }
+    if(priority > output -> priority) {
+        return 0;
+    }
     int ret = 0;
     pthread_mutex_lock(& output -> file_mutex);
         switch(output -> log_type) {

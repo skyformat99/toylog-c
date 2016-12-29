@@ -24,6 +24,7 @@
 
 #define MAX_FILE_NAME_LEN 1024
 
+#define LOG_TYPE_NONE   -1
 #define LOG_TYPE_CONCLE 0
 #define LOG_TYPE_FILE   1
 #define LOG_TYPE_SOCKET 2

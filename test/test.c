@@ -119,7 +119,11 @@ void test_parser()
     int n = 150000;
     int i = 0;
     for(i = 0; i < n; i++) {
-        toylog_error    ("[%d] compile time : %s %s, line : %d", i, __TIME__, __DATE__, __LINE__);
+        if(i & 1) {
+            toylog_error    ("[%d] compile time : %s %s, line : %d", i, __TIME__, __DATE__, __LINE__);
+        } else {
+            toylog_alert    ("[%d] compile time : %s %s, line : %d", i, __TIME__, __DATE__, __LINE__);
+        }
     }
     toylog_end();
 
