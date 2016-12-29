@@ -109,6 +109,9 @@ int toylog_file_full(LogOutput * output) {
         TOYDBG("output or filename is NULL");
         return 1;
     }
+    if(0 == output -> filesize) {
+        return 0;
+    }
     struct stat buf;
     if(fstat(output -> out -> _fileno, &buf) < 0) {
         TOYDBG("get file fstat faild");
