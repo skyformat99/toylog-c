@@ -116,6 +116,11 @@ void test_parser()
     toylog_notset   ("compile time : %s %s, line : %d", __TIME__, __DATE__, __LINE__);
     toylog_unknown  ("compile time : %s %s, line : %d", __TIME__, __DATE__, __LINE__);
 
+    int n = 150000;
+    int i = 0;
+    for(i = 0; i < n; i++) {
+        toylog_error    ("[%d] compile time : %s %s, line : %d", i, __TIME__, __DATE__, __LINE__);
+    }
     toylog_end();
 
     printf("log test OK\n");

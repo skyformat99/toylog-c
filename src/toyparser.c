@@ -19,6 +19,7 @@
 #include <stdio.h>
 #include <string.h>
 #include <stdlib.h>
+#include <libgen.h>
 #include "toyparser.h"
 #include "toybitmap.h"
 #include "toydebug.h"
@@ -385,6 +386,7 @@ unsigned long int toylog_parse_file_size(const char * value) {
     }
     char *p = NULL;
     unsigned long int x = strtoul(value, &p, 0);
+    TOYDBG("get file size : [%lu]", x);
     if(p == value) {
         //error
         return 0;
@@ -403,26 +405,26 @@ unsigned long int toylog_parse_file_size(const char * value) {
                 break;
             case 'k' :
             case 'K' :
-                x = KB;
+                x *= KB;
                 ok = 1;
                 break;
             case 'M' :
             case 'm' :
-                x = MB;
+                x *= MB;
                 ok = 1;
                 break;
             case 'g' :
             case 'G' :
-                x = GB;
+                x *= GB;
                 ok = 1;
                 break;
             case 't' :
             case 'T' :
-                x = TB;
+                x *= TB;
                 break;
             case 'p' :
             case 'P' :
-                x = PB;
+                x *= PB;
                 ok = 1;
             default :
                 ok = 1;
@@ -443,6 +445,8 @@ LogOutput * get_logoutput(char * const* line_list, const char * toyfile) {
 
     int  _log_type = 0;
     char _log_filename[MAX_FILE_NAME_LEN] = {0};
+    char _log_file[MAX_FILE_NAME_LEN] = {0};
+    char _log_dir[MAX_FILE_NAME_LEN] = {0};
     unsigned long int  _log_filesize = 0;
     long int  _log_filecount = 0;
     char _log_engine[MAX_FILE_NAME_LEN] = {0};
@@ -492,6 +496,8 @@ LogOutput * get_logoutput(char * const* line_list, const char * toyfile) {
                 TOYDBG("get value of [%s] faild", "filename");
             } else {
                 snprintf(_log_filename, sizeof(_log_filename) - 1, value);
+                snprintf(_log_dir, sizeof(_log_dir) - 1, value);
+                snprintf(_log_file, sizeof(_log_file) - 1, value);
             }
             continue;
         }
@@ -565,6 +571,17 @@ LogOutput * get_logoutput(char * const* line_list, const char * toyfile) {
     }
     plog -> log_type = _log_type;
     plog -> log_file = toy_strndup(_log_filename, strlen(_log_filename));
+    if(LOG_TYPE_FILE == _log_type && strlen(_log_filename) > 0) {
+        char *pdir = dirname(_log_dir);
+        if(NULL != pdir) {
+            plog -> dir = toy_strndup(pdir, strlen(pdir));
+        }
+        char * pfile = basename(_log_file);
+        TOYDBG("file name is [%s], dir is [%s]", pfile, pdir);
+        if(NULL != pfile) {
+            plog -> file = toy_strndup(pfile, strlen(pfile));
+        }
+    }
     plog -> filesize = _log_filesize;
     plog -> filecount = _log_filecount;
     plog -> engine   = toy_strndup(_log_engine, strlen(_log_engine));
@@ -878,6 +895,8 @@ int free_layout(LogOutput * layout) {
     free_mem(layout -> engine);
     free_mem(layout -> protocol);
     free_mem(layout -> log_file);
+    free_mem(layout -> dir);
+    free_mem(layout -> file);
     if(NULL != layout -> out) {
         close_file(layout);
     }

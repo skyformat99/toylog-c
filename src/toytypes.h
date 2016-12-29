@@ -68,6 +68,8 @@ typedef struct
     char *engine;
     char *protocol;
     char *log_file;
+    char *file;
+    char *dir;
     unsigned long int filesize;
     int  filecount;
     FILE *out;

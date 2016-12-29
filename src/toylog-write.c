@@ -16,6 +16,11 @@
  * =====================================================================================
  */
 #include <stdio.h>
+#include <sys/types.h>
+#include <sys/stat.h>
+#include <unistd.h>
+#include <dirent.h>
+#include <stdarg.h>
 #include "toydebug.h"
 #include "toytypes.h"
 
@@ -98,11 +103,65 @@ int toylog_write_file(LogOutput * output, int priority, const char * fmt, va_lis
 }
 
 int toylog_file_full(LogOutput * output) {
+    if( NULL == output || 
+        NULL == output -> log_file ||
+        NULL == output -> out) {
+        TOYDBG("output or filename is NULL");
+        return 1;
+    }
+    struct stat buf;
+    if(fstat(output -> out -> _fileno, &buf) < 0) {
+        TOYDBG("get file fstat faild");
+        return 1;
+    }
+    if(buf.st_size > output -> filesize) {
+        return 1;
+    }
+
     return 0;
 }
 
+int toylog_move_file(LogOutput * output, int index) {
+    if(NULL == output) {
+        return -1;
+    }
+    char szlbuf[MAX_FILE_NAME_LEN] = {0};
+    char szgbuf[MAX_FILE_NAME_LEN] = {0};
+    get_filename(szlbuf, sizeof(szlbuf), output, index);
+    get_filename(szgbuf, sizeof(szgbuf), output, index + 1);
+    if(access(szlbuf, F_OK) != 0) {
+        TOYDBG("file not exists : [%s]", szlbuf);
+        return 0;
+    }
+    if(index >= output -> filecount) {
+        TOYDBG("remove file : [%s]", szlbuf);
+        return remove(szlbuf);
+    }
+    toylog_move_file(output, index + 1);
+
+    TOYDBG("rename file [%s] to [%s]", szlbuf, szgbuf);
+    return rename(szlbuf, szgbuf);
+}
+
 int toylog_adjust_file(LogOutput * output) {
-    return 0;
+    if(NULL == output) {
+        return -1;
+    }
+    char szbuf[MAX_FILE_NAME_LEN] = {0};
+    get_filename(szbuf, sizeof(szbuf), output, 0);
+    if(NULL != output -> file) {
+        fclose(output -> out);
+        output -> out = NULL;
+    }
+    truncate(szbuf, output -> filesize);
+    toylog_move_file(output, 0);
+    FILE * fp = fopen(szbuf, "a");
+    if(NULL != fp) {
+        output -> out = fp;
+        return 0;
+    }
+
+    return -1;
 }
 
 int toylog_write_mutex(LogOutput * output, int priority, const char * fmt, va_list arg_list) {
@@ -117,11 +176,16 @@ int toylog_write_mutex(LogOutput * output, int priority, const char * fmt, va_li
                 toylog_write_file(output, priority, fmt, arg_list);
                 break;
             case LOG_TYPE_FILE :
-                TOYDBG("write file");
-                if(toylog_file_full(output)) {
-                    toylog_adjust_file(output);
+                {
+                    //TOYDBG("write file");
+                    va_list arg_screen;
+                    va_copy(arg_screen, arg_list);
+                    toylog_write_file(output, priority, fmt, arg_list);
+                    if(toylog_file_full(output)) {
+                        toylog_adjust_file(output);
+                        toylog_write_file(output, priority, fmt, arg_screen);
+                    }
                 }
-                toylog_write_file(output, priority, fmt, arg_list);
                 break;
             default :
                 break;

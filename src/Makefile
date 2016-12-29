@@ -44,12 +44,14 @@ inc : dummy
 libtoylog.a : toylog-c.os \
 	toyparser.os \
 	toytypes.os \
-	toylog-write.os
+	toylog-write.os \
+	toylog-file.o
 	ar cr $@ $^
 
 libtoylog.so : toylog-c.os \
 	toyparser.os \
 	toytypes.os \
-	toylog-write.os
+	toylog-write.os \
+	toylog-file.os
 	$(MAKE) -shared -Wl,-soname,$@ -o $@ $^ -lc $(LDFLAGS) 
 

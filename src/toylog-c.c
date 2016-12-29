@@ -1,6 +1,7 @@
 #include <unistd.h>
 #include "toytypes.h"
 #include "toylog-c.h"
+#include "toylog-file.h"
 #include "toylog-write.h"
 
 LogBody * _g_Log = NULL;
@@ -378,8 +379,10 @@ int toylog_open_file(LogOutput * output) {
             break;
         case LOG_TYPE_FILE :
             if(NULL != output -> log_file) {
-                TOYDBG("open file : [%s]", output -> log_file);
-                output -> out = fopen(output -> log_file, "a");
+                char szbuf[MAX_FILE_NAME_LEN] = {0};
+                get_filename(szbuf, sizeof(szbuf), output, 0);
+                TOYDBG("open file : [%s]", szbuf);
+                output -> out = fopen(szbuf, "a");
             }
             break;
         default :

@@ -121,6 +121,8 @@ void show_logoutput(LogOutput * log) {
     TOYDBG("==============================");
     TOYDBG("type     = [%d]", log -> log_type);
     TOYDBG("filename = [%s]", log -> log_file);
+    TOYDBG("file     = [%s]", log -> file);
+    TOYDBG("dir      = [%s]", log -> dir);
     TOYDBG("filesize = [%lu]", log -> filesize);
     TOYDBG("filecount= [%d]", log -> filecount);
     TOYDBG("engine   = [%s]", log -> engine);
