@@ -7,6 +7,12 @@ CFLAGS	= -Wall -I./ -DTOYDEBUG
 #CFLAGS	= -Wall -I./ 
 LDFLAGS	= 
 ALL_FILE= libtoylog.so libtoylog.a
+OBJS	= toylog-c.os \
+	toyparser.os \
+	toytypes.os \
+	toylog-write.os \
+	toylog-file.os	\
+	toylog-db.os
 
 %.i : %.c
 	$(MAKE) -E -o $@ $< $(CFLAGS)
@@ -41,17 +47,9 @@ inc : dummy
 ## task 
 ##############################
 
-libtoylog.a : toylog-c.os \
-	toyparser.os \
-	toytypes.os \
-	toylog-write.os \
-	toylog-file.o
+libtoylog.a : $(OBJS)
 	ar cr $@ $^
 
-libtoylog.so : toylog-c.os \
-	toyparser.os \
-	toytypes.os \
-	toylog-write.os \
-	toylog-file.os
+libtoylog.so : $(OBJS)
 	$(MAKE) -shared -Wl,-soname,$@ -o $@ $^ -lc $(LDFLAGS) 
 

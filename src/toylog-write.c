@@ -19,6 +19,7 @@
 #include <stdarg.h>
 #include "toydebug.h"
 #include "toylog-file.h"
+#include "toylog-db.h"
 #include "toytypes.h"
 
 int toylog_write_mutex(LogOutput * output, int priority, const char * fmt, va_list arg_list) {
@@ -45,6 +46,12 @@ int toylog_write_mutex(LogOutput * output, int priority, const char * fmt, va_li
                         toylog_adjust_file(output);
                         toylog_write_file(output, priority, fmt, arg_screen);
                     }
+                }
+                break;
+            case LOG_TYPE_DB :
+                {
+                    // write to DB
+                    toylog_write_db(output, priority, fmt, arg_list);
                 }
                 break;
             default :
