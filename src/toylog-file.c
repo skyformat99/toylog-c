@@ -20,6 +20,7 @@
 #include <sys/stat.h>
 #include <unistd.h>
 #include <dirent.h>
+#include <stdarg.h>
 #include "toydebug.h"
 #include "toylog-file.h"
 
@@ -141,8 +142,9 @@ int toylog_file_full(LogOutput * output) {
     if(0 == output -> filesize) {
         return 0;
     }
+    FILE * fp = (FILE *)(output -> out);
     struct stat buf;
-    if(fstat(output -> out -> _fileno, &buf) < 0) {
+    if(fstat(fp -> _fileno, &buf) < 0) {
         TOYDBG("get file fstat faild");
         return 1;
     }
@@ -182,7 +184,8 @@ int toylog_adjust_file(LogOutput * output) {
     char szbuf[MAX_FILE_NAME_LEN] = {0};
     get_filename(szbuf, sizeof(szbuf), output, 0);
     if(NULL != output -> file) {
-        fclose(output -> out);
+        FILE * fp = (FILE *)(output -> out);
+        fclose(fp);
         output -> out = NULL;
     }
     truncate(szbuf, output -> filesize);
@@ -195,4 +198,17 @@ int toylog_adjust_file(LogOutput * output) {
 
     return -1;
 }
+
+int toylog_write_to_file(LogOutput * output, int priority, const char * fmt, va_list arg_list) {
+    va_list arg_screen;
+    va_copy(arg_screen, arg_list);
+    toylog_write_file(output, priority, fmt, arg_list);
+    if(toylog_file_full(output)) {
+        toylog_adjust_file(output);
+        toylog_write_file(output, priority, fmt, arg_screen);
+    }
+
+    return 0;
+}
+
 

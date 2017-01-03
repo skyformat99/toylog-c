@@ -21,9 +21,9 @@
 #include "toytypes.h"
 #include "toylog-db.h"
 
-int toylog_write_db(LogOutput * output, int priority, const char * fmt, va_list arg_list) {
-    if(NULL == output) {
-        TOYDBG("output is NULL");
+int toylog_write_to_db(LogOutput * output, int priority, const char * fmt, va_list arg_list) {
+    if(NULL == output || NULL == output -> out) {
+        TOYDBG("output or out is NULL");
         return -1;
     }
 

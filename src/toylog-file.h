@@ -8,6 +8,7 @@ int toylog_write_file(LogOutput * output, int priority, const char * fmt, va_lis
 int toylog_file_full(LogOutput * output);
 int toylog_move_file(LogOutput * output, int index);
 int toylog_adjust_file(LogOutput * output);
+int toylog_write_to_file(LogOutput * output, int priority, const char * fmt, va_list arg_list);
 
 #endif
 

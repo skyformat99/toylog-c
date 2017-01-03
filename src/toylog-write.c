@@ -20,6 +20,7 @@
 #include "toydebug.h"
 #include "toylog-file.h"
 #include "toylog-db.h"
+#include "toylog-console.h"
 #include "toytypes.h"
 
 int toylog_write_mutex(LogOutput * output, int priority, const char * fmt, va_list arg_list) {
@@ -34,24 +35,18 @@ int toylog_write_mutex(LogOutput * output, int priority, const char * fmt, va_li
         switch(output -> log_type) {
             case LOG_TYPE_CONCLE :
                 TOYDBG("write console");
-                toylog_write_file(output, priority, fmt, arg_list);
+                toylog_write_to_console(output, priority, fmt, arg_list);
                 break;
             case LOG_TYPE_FILE :
                 {
                     //TOYDBG("write file");
-                    va_list arg_screen;
-                    va_copy(arg_screen, arg_list);
-                    toylog_write_file(output, priority, fmt, arg_list);
-                    if(toylog_file_full(output)) {
-                        toylog_adjust_file(output);
-                        toylog_write_file(output, priority, fmt, arg_screen);
-                    }
+                    toylog_write_to_file(output, priority, fmt, arg_list);
                 }
                 break;
             case LOG_TYPE_DB :
                 {
                     // write to DB
-                    toylog_write_db(output, priority, fmt, arg_list);
+                    toylog_write_to_db(output, priority, fmt, arg_list);
                 }
                 break;
             default :

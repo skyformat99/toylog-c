@@ -18,17 +18,9 @@
 #include <stdio.h>
 #include "toylog-console.h"
 #include "toytypes.h"
-#include "toylog-write.h"
+#include "toylog-file.h"
 
-int toylog_write_console(LogOutput * output, int priority, const char * fmt, va_list arg_list) {
-    if(NULL == output) {
-        return -1;
-    }
-    int ret = 0;
-    pthread_mutex_lock(& output -> file_mutex);
-    ret = toylog_write(output, priority, fmt, arg_list);
-    pthread_mutex_unlock(& output -> file_mutex);
-
-    return ret;
+int toylog_write_to_console(LogOutput * output, int priority, const char * fmt, va_list arg_list) {
+    return toylog_write_file(output, priority, fmt, arg_list);
 }
 

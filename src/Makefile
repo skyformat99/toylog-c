@@ -12,7 +12,8 @@ OBJS	= toylog-c.os \
 	toytypes.os \
 	toylog-write.os \
 	toylog-file.os	\
-	toylog-db.os
+	toylog-db.os	\
+	toylog-console.os
 
 %.i : %.c
 	$(MAKE) -E -o $@ $< $(CFLAGS)

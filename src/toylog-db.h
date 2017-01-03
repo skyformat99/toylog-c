@@ -1,7 +1,7 @@
 #ifndef _TOYLOG_DB_H_
 #define _TOYLOG_DB_H_
 
-int toylog_write_db(LogOutput * output, int priority, const char * fmt, va_list arg_list);
+int toylog_write_to_db(LogOutput * output, int priority, const char * fmt, va_list arg_list);
 
 #endif 
 

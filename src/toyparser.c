@@ -876,7 +876,8 @@ int close_file(LogOutput * layout) {
             break;
         case LOG_TYPE_FILE :
             if (NULL != layout -> out) {
-                fclose(layout -> out);
+                FILE * fp = (FILE *)(layout -> out);
+                fclose(fp);
                 layout -> out = NULL;
             }
             break;

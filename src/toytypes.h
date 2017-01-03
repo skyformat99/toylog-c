@@ -73,7 +73,7 @@ typedef struct
     char *dir;
     unsigned long int filesize;
     int  filecount;
-    FILE *out;
+    void *out;
     char * layout;
     LogLayout * formatted_layout;
     char *compiled_font;
