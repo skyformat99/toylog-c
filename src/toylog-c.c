@@ -2,6 +2,7 @@
 #include "toytypes.h"
 #include "toylog-c.h"
 #include "toylog-file.h"
+#include "toylog-db.h"
 #include "toylog-write.h"
 
 LogBody * _g_Log = NULL;
@@ -58,6 +59,11 @@ int toylog_open_file(LogOutput * output) {
                 get_filename(szbuf, sizeof(szbuf), output, 0);
                 TOYDBG("open file : [%s]", szbuf);
                 output -> out = fopen(szbuf, "a");
+            }
+            break;
+        case LOG_TYPE_DB :
+            {
+                toylog_open_db(output);
             }
             break;
         default :

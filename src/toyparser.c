@@ -22,6 +22,7 @@
 #include <libgen.h>
 #include "toyparser.h"
 #include "toybitmap.h"
+#include "toylog-db.h"
 #include "toydebug.h"
 
 int parse_file  (LogBody * log, const char * file) {
@@ -879,6 +880,11 @@ int close_file(LogOutput * layout) {
                 FILE * fp = (FILE *)(layout -> out);
                 fclose(fp);
                 layout -> out = NULL;
+            }
+            break;
+        case LOG_TYPE_DB :
+            {
+                toylog_close_db(layout);
             }
             break;
         default :
