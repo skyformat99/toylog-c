@@ -882,11 +882,13 @@ int close_file(LogOutput * layout) {
                 layout -> out = NULL;
             }
             break;
+#if ENABLE_DB
         case LOG_TYPE_DB :
             {
                 toylog_close_db(layout);
             }
             break;
+#endif
         default :
             break;
     }

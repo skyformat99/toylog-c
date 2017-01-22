@@ -61,11 +61,13 @@ int toylog_open_file(LogOutput * output) {
                 output -> out = fopen(szbuf, "a");
             }
             break;
+#if ENABLE_DB
         case LOG_TYPE_DB :
             {
                 toylog_open_db(output);
             }
             break;
+#endif
         default :
             break;
     }

@@ -43,12 +43,14 @@ int toylog_write_mutex(LogOutput * output, int priority, const char * fmt, va_li
                     toylog_write_to_file(output, priority, fmt, arg_list);
                 }
                 break;
+#if ENABLE_DB
             case LOG_TYPE_DB :
                 {
                     // write to DB
                     toylog_write_to_db(output, priority, fmt, arg_list);
                 }
                 break;
+#endif
             default :
                 break;
         }

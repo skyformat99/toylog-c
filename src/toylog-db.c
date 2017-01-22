@@ -22,6 +22,8 @@
 #include "toytypes.h"
 #include "toylog-db.h"
 
+#if ENABLE_DB
+
 int toylog_write_to_db(LogOutput * output, int priority, const char * fmt, va_list arg_list) {
     if(NULL == output) {
         TOYDBG("output is NULL");
@@ -132,4 +134,6 @@ int toylog_close_mysql(LogOutput * output) {
 int toylog_write_mysql(LogOutput * output) {
     return 0;
 }
+
+#endif
 

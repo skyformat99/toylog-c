@@ -3,8 +3,8 @@
 CC	= gcc -g
 CXX	= g++ -g 
 MAKE= $(CC)
-CFLAGS	= -Wall -I./ -DTOYDEBUG
-#CFLAGS	= -Wall -I./ 
+#CFLAGS	= -Wall -I./ -DTOYDEBUG
+CFLAGS	= -Wall -I./ 
 LDFLAGS	= 
 ALL_FILE= libtoylog.so libtoylog.a
 OBJS	= toylog-c.os \
@@ -12,7 +12,7 @@ OBJS	= toylog-c.os \
 	toytypes.os \
 	toylog-write.os \
 	toylog-file.os	\
-	toylog-db.os	\
+	toylog-db.os \
 	toylog-console.os
 
 %.i : %.c
